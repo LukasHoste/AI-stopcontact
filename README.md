@@ -31,5 +31,5 @@ loss 0.2084 vall_los 0.2125
 - RMSprop = werkt redelijk, maar ook niet echt goed, de loss bereikt nooit een uitstekende waarde
 - adam = werkt goed, bereikt vaker een goede waarde dan andere optimizers
 - adamax = werkt redelijk, beetje beter dan RMSprop, loss wordt wel niet super goed
-- FTRL = werkt goed, loss verlaag traag, maar verlaagt wel telkens, mss goed met veel epochs
+- FTRL = werkt goed, loss verlaagt traag, maar verlaagt wel telkens, mss goed met heel veel epochs
 - nadam = werkt redelijk, gelijkaardag aan RMSprop
