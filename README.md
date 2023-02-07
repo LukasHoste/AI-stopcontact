@@ -26,13 +26,10 @@ loss 0.2084 vall_los 0.2125
 
 ## testen van optimizers
 
--sgd = niet goed, loss verandert niet goed
--adagrad = niet goed, loss verandert vrijwel niet
--RMSprop = werkt redelijk, maar ook niet echt goed, de loss bereikt nooit een uitstekende waarde
--adam = werkt goed, bereikt vaker een goede waarde dan andere optimizers
--adamax = werkt redelijk, beetje beter dan RMSprop, loss wordt wel niet super goed
--FTRL = werkt goed, loss verlaag traag, maar verlaagt wel telkens, mss goed met veel epochs
--nadam = werkt redelijk, gelijkaardag aan RMSprop
-
-
-
+- sgd = niet goed, loss verandert niet goed
+- adagrad = niet goed, loss verandert vrijwel niet
+- RMSprop = werkt redelijk, maar ook niet echt goed, de loss bereikt nooit een uitstekende waarde
+- adam = werkt goed, bereikt vaker een goede waarde dan andere optimizers
+- adamax = werkt redelijk, beetje beter dan RMSprop, loss wordt wel niet super goed
+- FTRL = werkt goed, loss verlaag traag, maar verlaagt wel telkens, mss goed met veel epochs
+- nadam = werkt redelijk, gelijkaardag aan RMSprop
