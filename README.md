@@ -32,4 +32,25 @@ loss 0.2084 vall_los 0.2125
 - adam = werkt goed, bereikt vaker een goede waarde dan andere optimizers
 - adamax = werkt redelijk, beetje beter dan RMSprop, loss wordt wel niet super goed
 - FTRL = werkt goed, loss verlaagt traag, maar verlaagt wel telkens, mss goed met heel veel epochs
-- nadam = werkt redelijk, gelijkaardag aan RMSprop
+- nadam = werkt redelijk, gelijkaardig aan RMSprop
+
+## Home assistant setup voorlopig
+
+### MQTT broker
+
+1. Install Mosquitto broker in de Add-on store.
+2. Dan naar integrations gaan en Mosquitto broker opzetten.
+3. MQTT explorer kijken als het werkt.
+
+### Fix Node-red bad gateway
+
+1. Credential secret toevoegen (addons->node-red->configuration)
+2. SSL uitzetten (zelfde plek)
+3. Opnieuw opstarten van Node-Red
+
+### Shelly
+
+1. Shelly in-pluggen en verbinden met zijn hotspot: 192.168.33.1
+2. Dan onder internet & security de wifi mode instellen op iotlab
+3. Dan via de shelly app kan je zijn nieuwe IP terugvinden (zorg ervoor dat de cloud nog niet is uitgezet)
+4. Dan onder internet & security de cloud uitzetten en ten laatste onder de advanced developer settings, enable je de MQTT met de username hetzelfde als dat van de homeassitant + passw en de IP van de homeassistant.
