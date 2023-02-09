@@ -16,8 +16,6 @@ loss 0.2414 en vall_los 0.2392
 
 ### 2 hidden layers 100 -> 50 met rmsprop, batch_size = 16 en telkens relu 50 epochs
 
-
-
 ### 2 hidden layers 5 -> 3 met adam, batch_size = 16 en telkens relu 50 epochs
 
 loss 0.2084 vall_los 0.2125
@@ -54,3 +52,21 @@ loss 0.2084 vall_los 0.2125
 2. Dan onder internet & security de wifi mode instellen op iotlab
 3. Dan via de shelly app kan je zijn nieuwe IP terugvinden (zorg ervoor dat de cloud nog niet is uitgezet)
 4. Dan onder internet & security de cloud uitzetten en ten laatste onder de advanced developer settings, enable je de MQTT met de username hetzelfde als dat van de homeassitant + passw en de IP van de homeassistant.
+
+## Sluimerverbruik apparaten
+
+1. Monitor : als de monitor uit is, is het sluimerverbruik = 0W. Waarschijnlijk door de powersave die op de monitor zit.
+
+![monitor_sluimerverbruik](./img/monitor_sluimerverbruik.png)
+
+2. Printer: als het in standby uiteindelijk komt is het 5W. (<5.5)
+
+![printer_sluimerverbruik](./img/printer_sluimerverbruik.png)
+
+3. Computer (van school): als de computer uit is dan heeft het een sluimerverbruik van ong. 1W
+
+![computer_sluimerverbruik](./img/computer_sluimerverbruik.png)
+
+4. Soundboxen: als de boxen uitstaan dan heeft het een sluimerverbruik van 2W -> ingebruik 4-5W
+
+![soundboxen_sluimerverbruik](./img/soudboxen_sluimerverbruik.png)
