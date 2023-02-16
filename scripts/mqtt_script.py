@@ -37,7 +37,7 @@ def on_message(client, userdata, message):
     print(CLASSES[class_index])
 
 
-model = keras.models.load_model('../models/16-02-23/model_saved')
+model = keras.models.load_model('../models/16-02-23(50-25 0.001)/model_saved')
 
 Connected = False   #global variable for the state of the connection
   
