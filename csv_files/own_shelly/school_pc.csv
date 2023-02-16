@@ -1,4 +1,4 @@
-"time","school_pc.mean_ApparentPower","school_pc.mean_Current","school_pc.mean_Factor","school_pc.mean_Power","school_pc.mean_ReactivePower","school_pc.mean_Voltage"
+"time","ApparentPower","Current","Factor","Power","ReactivePower","Voltage"
 "2023-02-16T08:49:30.000+01:00","17","0.08","0.05","1","17","212"
 "2023-02-16T08:49:40.000+01:00","17","0.081","0.05","1","17","213"
 "2023-02-16T08:49:50.000+01:00","17","0.081","0.05","1","17","213"
