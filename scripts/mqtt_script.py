@@ -16,28 +16,49 @@ def on_connect(client, userdata, flags, rc):
 
 CLASSES=['laptop', 'phone_charging', 'school_box', 'school_pc', 'school_printer']
 
+numpy_array = np.zeros(shape=(1,50))
+i = 0
+
 def on_message(client, userdata, message):
+    global i
+    global numpy_array
     bytes_array = message.payload
     data = literal_eval(bytes_array.decode('utf8'))
     json_string = json.dumps(data, indent=4,sort_keys=True)
     json_object = json.loads(json_string)
     print(message.payload)
-    print(json_object["ENERGY"]["Current"])
-    numpy_array = np.zeros(shape=(1,5))
-    numpy_array[0][0] = json_object["ENERGY"]["ApparentPower"]
-    numpy_array[0][1] = json_object["ENERGY"]["Current"]
-    numpy_array[0][2] = json_object["ENERGY"]["Factor"]
-    numpy_array[0][3] = json_object["ENERGY"]["Power"]
-    numpy_array[0][4] = json_object["ENERGY"]["ReactivePower"]
-    print(numpy_array)
-    pred_test = model.predict(numpy_array)
-    print(pred_test)
-    class_index = np.argmax(pred_test)
-    print(class_index)
-    print(CLASSES[class_index])
+    # print(json_object["ENERGY"]["Current"])
+    if(i < 10):
+        print(i)
+        numpy_array[0][i] = json_object["ENERGY"]["ApparentPower"]
+        numpy_array[0][i+1] = json_object["ENERGY"]["Current"]
+        numpy_array[0][i+2] = json_object["ENERGY"]["Factor"]
+        numpy_array[0][i+3] = json_object["ENERGY"]["Power"]
+        numpy_array[0][i+4] = json_object["ENERGY"]["ReactivePower"]
+        i = i+1
+    if (i == 10):
+        pred_test = model.predict(numpy_array)
+        print(pred_test)
+        class_index = np.argmax(pred_test)
+        print(class_index)
+        print(CLASSES[class_index])
+        i = 0
+        numpy_array = np.zeros(shape=(1,50))
+    # numpy_array[0][0] = json_object["ENERGY"]["ApparentPower"]
+    # numpy_array[0][1] = json_object["ENERGY"]["Current"]
+    # numpy_array[0][2] = json_object["ENERGY"]["Factor"]
+    # numpy_array[0][3] = json_object["ENERGY"]["Power"]
+    # numpy_array[0][4] = json_object["ENERGY"]["ReactivePower"]
+    # print(numpy_array)
+    # pred_test = model.predict(numpy_array)
+    # print(pred_test)
+    # class_index = np.argmax(pred_test)
+    # print(class_index)
+    # print(CLASSES[class_index])
 
 
-model = keras.models.load_model('../models/16-02-23(50-25 0.001)/model_saved')
+
+model = keras.models.load_model('../models/model_multiple_samples/model_saved')
 
 Connected = False   #global variable for the state of the connection
   
