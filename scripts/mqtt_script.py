@@ -16,34 +16,52 @@ def on_connect(client, userdata, flags, rc):
 
 CLASSES=['laptop', 'phone_charging', 'school_box', 'school_pc', 'school_printer']
 
-numpy_array = np.zeros(shape=(1,50))
-i = 0
+numpy_array = np.zeros(shape=(1,0))
+print(numpy_array)
+# i = 0
 
 def on_message(client, userdata, message):
-    global i
+    # global i
     global numpy_array
-    bytes_array = message.payload
-    data = literal_eval(bytes_array.decode('utf8'))
-    json_string = json.dumps(data, indent=4,sort_keys=True)
-    json_object = json.loads(json_string)
-    print(message.payload)
+    # bytes_array = message.payload
+    # data = literal_eval(bytes_array.decode('utf8'))
+    # json_string = json.dumps(data, indent=4,sort_keys=True)
+    # json_object = json.loads(json_string)
+    # print(message.payload)
+    bytes_array = message.payload.decode('utf8')
+    json_object = json.loads(bytes_array)
+    print(json_object)
     # print(json_object["ENERGY"]["Current"])
-    if(i < 10):
-        print(i)
-        numpy_array[0][i] = json_object["ENERGY"]["ApparentPower"]
-        numpy_array[0][i+1] = json_object["ENERGY"]["Current"]
-        numpy_array[0][i+2] = json_object["ENERGY"]["Factor"]
-        numpy_array[0][i+3] = json_object["ENERGY"]["Power"]
-        numpy_array[0][i+4] = json_object["ENERGY"]["ReactivePower"]
-        i = i+1
-    if (i == 10):
+    print(str(numpy_array.size) + "hello i am a numpy array")
+    if((numpy_array.size/5) <= 9):
+        print(numpy_array.size)
+        numpy_array = np.append(numpy_array,[json_object["ENERGY"]["ApparentPower"],
+        json_object["ENERGY"]["Current"],
+        json_object["ENERGY"]["Factor"],
+        json_object["ENERGY"]["Power"],
+        json_object["ENERGY"]["ReactivePower"]
+        ])
+        print(numpy_array)
+        print(json_object["ENERGY"]["ApparentPower"])
+    if ((numpy_array.size/5) > 9):
+        numpy_array = np.append(numpy_array,[json_object["ENERGY"]["ApparentPower"],
+        json_object["ENERGY"]["Current"],
+        json_object["ENERGY"]["Factor"],
+        json_object["ENERGY"]["Power"],
+        json_object["ENERGY"]["ReactivePower"]
+        ])
+        numpy_array = np.delete(numpy_array,[0,1,2,3,4])
+        print(numpy_array)
+        numpy_array = numpy_array.reshape((1,50))
+        print(numpy_array)
         pred_test = model.predict(numpy_array)
         print(pred_test)
         class_index = np.argmax(pred_test)
         print(class_index)
         print(CLASSES[class_index])
-        i = 0
-        numpy_array = np.zeros(shape=(1,50))
+        client.publish("tele/tasmota_B4D6BC/SENSOR/prediction",CLASSES[class_index])
+        # i = 0
+        # numpy_array = np.zeros(shape=(1,50))
     # numpy_array[0][0] = json_object["ENERGY"]["ApparentPower"]
     # numpy_array[0][1] = json_object["ENERGY"]["Current"]
     # numpy_array[0][2] = json_object["ENERGY"]["Factor"]
