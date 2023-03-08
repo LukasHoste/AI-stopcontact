@@ -10,19 +10,28 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to broker")
         global Connected                #Use global variable
-        Connected = True                #Signal connection 
+        Connected = True                #Signal connection
+        client.subscribe("tele/+/SENSOR")
+        # client.subscribed_topics()
+        
     else:
       print("Connection failed")
 
-CLASSES=['laptop', 'phone_charging', 'school_box', 'school_pc', 'school_printer']
+CLASSES=['box', 'laptop', 'pc', 'phone', 'printer']
 
-numpy_array = np.zeros(shape=(1,0))
-print(numpy_array)
+prediction_arrays = {}
 # i = 0
 
 def on_message(client, userdata, message):
     # global i
-    global numpy_array
+    # global numpy_array_plug1
+    # global numpy_array_plug2
+    print(message.topic)
+    # prediction_arrays[str(message.topic)] = 1
+    if(not str(message.topic) in prediction_arrays):
+        print("adding topic key to the dictionary :)")
+        prediction_arrays[str(message.topic)] = np.zeros(shape=(1,0))
+
     # bytes_array = message.payload
     # data = literal_eval(bytes_array.decode('utf8'))
     # json_string = json.dumps(data, indent=4,sort_keys=True)
@@ -32,34 +41,47 @@ def on_message(client, userdata, message):
     json_object = json.loads(bytes_array)
     print(json_object)
     # print(json_object["ENERGY"]["Current"])
-    print(str(numpy_array.size) + "hello i am a numpy array")
-    if((numpy_array.size/5) <= 9):
-        print(numpy_array.size)
-        numpy_array = np.append(numpy_array,[json_object["ENERGY"]["ApparentPower"],
+    # if("B4D6BC" in message.topic):
+    #     numpy_array = np.array(numpy_array_plug1,copy=True)
+    # else:
+    #     numpy_array = np.array(numpy_array_plug2,copy=True)   
+    # print(str(prediction_arrays[message.topic].size))
+    if((prediction_arrays[str(message.topic)].size/5) <= 9):
+        print(prediction_arrays[str(message.topic)].size)
+        prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
         json_object["ENERGY"]["Factor"],
         json_object["ENERGY"]["Power"],
         json_object["ENERGY"]["ReactivePower"]
         ])
-        print(numpy_array)
-        print(json_object["ENERGY"]["ApparentPower"])
-    if ((numpy_array.size/5) > 9):
-        numpy_array = np.append(numpy_array,[json_object["ENERGY"]["ApparentPower"],
+        print(prediction_arrays[str(message.topic)])
+        # print(json_object["ENERGY"]["ApparentPower"])
+    if ((prediction_arrays[str(message.topic)].size/5) > 9):
+        prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
         json_object["ENERGY"]["Factor"],
         json_object["ENERGY"]["Power"],
         json_object["ENERGY"]["ReactivePower"]
         ])
-        numpy_array = np.delete(numpy_array,[0,1,2,3,4])
-        print(numpy_array)
-        numpy_array = numpy_array.reshape((1,50))
-        print(numpy_array)
-        pred_test = model.predict(numpy_array)
+        prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3,4])
+        # print(numpy_array)
+        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,50))
+        # print(numpy_array)
+        pred_test = model.predict(prediction_arrays[str(message.topic)])
         print(pred_test)
         class_index = np.argmax(pred_test)
         print(class_index)
         print(CLASSES[class_index])
-        client.publish("tele/tasmota_B4D6BC/SENSOR/prediction",CLASSES[class_index])
+        # if("B4D6BC" in message.topic):
+        #     client.publish(message.topic + "/prediction",CLASSES[class_index])
+        # else:
+        #     numpy_array = np.array(numpy_array_plug2,copy=True)   
+        client.publish(message.topic + "/prediction",CLASSES[class_index])
+    
+    # if("B4D6BC" in message.topic):
+    #     numpy_array_plug1 = np.array(numpy_array,copy=True)
+    # else:
+    #     numpy_array_plug2 = np.array(numpy_array,copy=True)   
         # i = 0
         # numpy_array = np.zeros(shape=(1,50))
     # numpy_array[0][0] = json_object["ENERGY"]["ApparentPower"]
@@ -76,7 +98,7 @@ def on_message(client, userdata, message):
 
 
 
-model = keras.models.load_model('../models/model_multiple_samples/model_saved')
+model = keras.models.load_model('../models/model_opendeur/model_saved')
 
 Connected = False   #global variable for the state of the connection
   
@@ -97,7 +119,7 @@ client.loop_start() #start the loop
 while Connected != True:    #Wait for connection
     time.sleep(0.1)
   
-client.subscribe("tele/tasmota_B4D6BC/SENSOR")
+# client.subscribe("tele/printer_plug/SENSOR")
 
 
 
