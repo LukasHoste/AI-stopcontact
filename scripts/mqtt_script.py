@@ -17,7 +17,7 @@ def on_connect(client, userdata, flags, rc):
     else:
       print("Connection failed")
 
-CLASSES=['box', 'laptop', 'pc', 'phone', 'printer']
+CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer']
 
 prediction_arrays = {}
 # i = 0
@@ -46,7 +46,7 @@ def on_message(client, userdata, message):
     # else:
     #     numpy_array = np.array(numpy_array_plug2,copy=True)   
     # print(str(prediction_arrays[message.topic].size))
-    if((prediction_arrays[str(message.topic)].size/5) <= 9):
+    if((prediction_arrays[str(message.topic)].size/5) <= 19):
         print(prediction_arrays[str(message.topic)].size)
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
@@ -56,7 +56,8 @@ def on_message(client, userdata, message):
         ])
         print(prediction_arrays[str(message.topic)])
         # print(json_object["ENERGY"]["ApparentPower"])
-    if ((prediction_arrays[str(message.topic)].size/5) > 9):
+    # if ((prediction_arrays[str(message.topic)].size/5) > 9):
+    else:
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
         json_object["ENERGY"]["Factor"],
@@ -65,13 +66,18 @@ def on_message(client, userdata, message):
         ])
         prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3,4])
         # print(numpy_array)
-        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,50))
+        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,100))
         # print(numpy_array)
         pred_test = model.predict(prediction_arrays[str(message.topic)])
         print(pred_test)
         class_index = np.argmax(pred_test)
         print(class_index)
         print(CLASSES[class_index])
+        print(pred_test)
+
+        print(pred_test[0][class_index])
+        if(pred_test[0][class_index] < 0.01):
+            print("hmm im not so sure about this prediction")
         # if("B4D6BC" in message.topic):
         #     client.publish(message.topic + "/prediction",CLASSES[class_index])
         # else:
@@ -98,7 +104,7 @@ def on_message(client, userdata, message):
 
 
 
-model = keras.models.load_model('../models/model_opendeur/model_saved')
+model = keras.models.load_model('../models/classification_lookback20/model_saved2.0')
 
 Connected = False   #global variable for the state of the connection
   
@@ -107,7 +113,7 @@ port = 1883  #Broker port
 user = "VIVESStopContact"                    #Connection username
 password = "stop123"            #Connection password
   
-client = mqttClient.Client("Python")               #create new instance
+client = mqttClient.Client("classification")               #create new instance
 client.username_pw_set(user, password=password)    #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
