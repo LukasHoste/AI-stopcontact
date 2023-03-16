@@ -25,6 +25,8 @@ no_usage_max = 0
 state = 0
 state_checked = 0
 history_array = np.zeros(shape=(1,0))
+day = 60*60*24
+week = 7*day
 # year = 365.2425*day
 
 # Load in the history
@@ -45,6 +47,8 @@ def on_message(client, userdata,message):
     global df_history
     global history_array
     global state
+    global day
+    global week
 
     if (normal_usage.size < 1):
         # user_input = input("Press enter to calculate the state for nomal usage")
@@ -85,16 +89,26 @@ def on_message(client, userdata,message):
         time_stamp = pd.to_datetime(time_stamp, format='%Y.%m.%d %H:%M:%S') #The timestamp in a format
         # print(time_stamp)
 
-        hour = time_stamp.hour
-        # print(hour)
-        minute = time_stamp.minute
-        # print(minute)
-        day_of_month = time_stamp.day
-        # print(day_of_month)
-        day_of_week = time_stamp.weekday()
-        # print(day_of_week)
-        month = time_stamp.month
-        print(month)
+        # Manier van Jarno
+        seconds = time_stamp.timestamp()
+        # print(seconds)
+        day_sin = np.sin(seconds * (2* np.pi / day))
+        day_cos = np.cos(seconds * (2* np.pi / day))
+        week_sin = np.sin(seconds * (2* np.pi / week))
+        week_cos = np.cos(seconds * (2* np.pi / week))
+
+        # Dit is ook voor dat van Lukas
+
+        # hour = time_stamp.hour
+        # # print(hour)
+        # minute = time_stamp.minute
+        # # print(minute)
+        # day_of_month = time_stamp.day
+        # # print(day_of_month)
+        # day_of_week = time_stamp.weekday()
+        # # print(day_of_week)
+        # month = time_stamp.month
+        # print(month)
 
         power = json_object3["ENERGY"]["Power"]
         # Convert the power to the state
@@ -124,16 +138,26 @@ def on_message(client, userdata,message):
             # Get it in the right shape for numpy array
             df_history.index = pd.to_datetime(df_history['timestamp'], format='%d.%m.%Y %H:%M:%S')
 
-            df_history['hour'] = df_history.index.hour
-            df_history['minute'] = df_history.index.minute
-            df_history['day_of_month'] = df_history.index.day
-            df_history['day_of_week'] = df_history.index.dayofweek
-            df_history['month'] = df_history.index.month
+            # Manier van Jarno
+            df_history['Seconds'] = df_history.index.map(pd.Timestamp.timestamp)
+            print(df_history['Seconds'])
+            df_history['Day sin'] = np.sin(df_history['Seconds'] * (2* np.pi / day))
+            df_history['Day cos'] = np.cos(df_history['Seconds'] * (2 * np.pi / day))
+            df_history['Week sin'] = np.sin(df_history['Seconds'] * (2 * np.pi / week))
+            df_history['Week cos'] = np.cos(df_history['Seconds'] * (2 * np.pi / week))
 
-            print(df_history)
+            # Dit uncommenten om hetgene van Lukas terug te gebruiken
+
+            # df_history['hour'] = df_history.index.hour
+            # df_history['minute'] = df_history.index.minute
+            # df_history['day_of_month'] = df_history.index.day
+            # df_history['day_of_week'] = df_history.index.dayofweek
+            # df_history['month'] = df_history.index.month
+            # print(df_history)
 
             # Append the data to a numpy array
             df_history = df_history.drop(columns=['timestamp'])
+            df_history = df_history.drop('Seconds', axis=1) # Dit zou ook moeten commented worden voor terug dat van Lukas
             df_history.dropna()
             history_array = np.array(df_history)
             print(history_array)
@@ -141,19 +165,21 @@ def on_message(client, userdata,message):
 
         if (state_checked >= 2):
         # Add the latest values to a numpy array 
-            if ((latest_value.size)/6 <= 1):
-                latest_value = np.append(latest_value, [state, hour, minute, day_of_month, day_of_week, month])
-                # print(latest_value)
-            if ((latest_value.size/6) > 1):
-                latest_value = np.delete(latest_value, [0,1,2,3,4,5])
-
+            if ((latest_value.size)/5 <= 1):
+                # latest_value = np.append(latest_value, [state, hour, minute, day_of_month, day_of_week, month])
+                latest_value = np.append(latest_value, [state, day_sin, day_cos, week_sin, week_cos])
+                print(latest_value)
+            if ((latest_value.size/5) > 1):
+                # latest_value = np.delete(latest_value, [0,1,2,3,4,5])
+                latest_value = np.delete(latest_value, [0,1,2,3,4])
+                
             # print("latest value from the plug", latest_value)
             history_array = np.vstack((history_array, latest_value))
             # history_array = np.append((history_array), [state, hour, minute, day_of_month, day_of_week, month], axis=len(history_array + 1))
             history_array = np.delete(history_array, 0, axis=0)
             print(history_array)
             print(history_array.shape)
-            prediction_array = history_array.reshape((1,2520,6))
+            prediction_array = history_array.reshape((1,2520,5))
             prediction_test = model.predict(prediction_array)
             print(prediction_test)
 
@@ -172,7 +198,7 @@ port = 1883  #Broker port
 user = "VIVESStopContact"       #Connection username
 password = "stop123"            #Connection password
   
-client = mqttClient.Client("Prediction_2")               #create new instance
+client = mqttClient.Client("Prediction")               #create new instance
 client.username_pw_set(user, password=password)    #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
