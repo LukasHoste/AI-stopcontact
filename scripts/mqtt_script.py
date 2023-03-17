@@ -71,8 +71,9 @@ def on_message(client, userdata, message):
         # print(numpy_array)
         prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,80))
         # print(numpy_array)
-        prediction_arrays[str(message.topic)] = scaler.transform(prediction_arrays[str(message.topic)])
-        pred_test = model.predict(prediction_arrays[str(message.topic)])
+        transformed_array = scaler.transform(prediction_arrays[str(message.topic)]) # copy nemen want we willen de array zelf niet veranderen
+        # prediction_arrays[str(message.topic)] = scaler.transform(prediction_arrays[str(message.topic)]) # dus niet meer de orig aanpassen
+        pred_test = model.predict(transformed_array)
         print(pred_test)
         class_index = np.argmax(pred_test)
         print(class_index)
