@@ -5,6 +5,9 @@ import json
 from ast import literal_eval
 import tensorflow as tf
 from tensorflow import keras
+import joblib
+
+scaler = joblib.load('scaler.gz')
   
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -46,11 +49,11 @@ def on_message(client, userdata, message):
     # else:
     #     numpy_array = np.array(numpy_array_plug2,copy=True)   
     # print(str(prediction_arrays[message.topic].size))
-    if((prediction_arrays[str(message.topic)].size/5) <= 19):
+    if((prediction_arrays[str(message.topic)].size/4) <= 19):
         print(prediction_arrays[str(message.topic)].size)
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
-        json_object["ENERGY"]["Factor"],
+        # json_object["ENERGY"]["Factor"],
         json_object["ENERGY"]["Power"],
         json_object["ENERGY"]["ReactivePower"]
         ])
@@ -60,14 +63,15 @@ def on_message(client, userdata, message):
     else:
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
-        json_object["ENERGY"]["Factor"],
+        # json_object["ENERGY"]["Factor"],
         json_object["ENERGY"]["Power"],
         json_object["ENERGY"]["ReactivePower"]
         ])
-        prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3,4])
+        prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3])
         # print(numpy_array)
-        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,100))
+        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,80))
         # print(numpy_array)
+        prediction_arrays[str(message.topic)] = scaler.transform(prediction_arrays[str(message.topic)])
         pred_test = model.predict(prediction_arrays[str(message.topic)])
         print(pred_test)
         class_index = np.argmax(pred_test)
@@ -104,7 +108,7 @@ def on_message(client, userdata, message):
 
 
 
-model = keras.models.load_model('../models/classification_lookback20/model_saved2.0')
+model = keras.models.load_model('../models/normalized_model/model_saved8.0')
 
 Connected = False   #global variable for the state of the connection
   
