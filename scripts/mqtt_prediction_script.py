@@ -6,7 +6,9 @@ import json
 from ast import literal_eval
 import tensorflow as tf
 from tensorflow import keras
+from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime, timedelta
+import joblib
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -25,6 +27,7 @@ no_usage_max = 0
 state = 0
 state_checked = 0
 history_array = np.zeros(shape=(1,0))
+
 # year = 365.2425*day
 
 # Load in the history
@@ -32,6 +35,8 @@ df_history = pd.read_csv(r'../csv_files/dataset-na-krokus/pc_fake_test2_1w.csv',
 
 # Numpy array for the new values that were sent
 latest_value = np.zeros(shape=(1,0))
+
+scaler = joblib.load('scaler4.gz')
 
 def on_message(client, userdata,message):
     global latest_value
@@ -45,6 +50,7 @@ def on_message(client, userdata,message):
     global df_history
     global history_array
     global state
+    global scaler
 
     if (normal_usage.size < 1):
         # user_input = input("Press enter to calculate the state for nomal usage")
@@ -89,7 +95,7 @@ def on_message(client, userdata,message):
         # print(hour)
         minute = time_stamp.minute
         # print(minute)
-        day_of_month = time_stamp.day
+        # day_of_month = time_stamp.day
         # print(day_of_month)
         day_of_week = time_stamp.weekday()
         # print(day_of_week)
@@ -126,9 +132,12 @@ def on_message(client, userdata,message):
 
             df_history['hour'] = df_history.index.hour
             df_history['minute'] = df_history.index.minute
-            df_history['day_of_month'] = df_history.index.day
+            # df_history['day_of_month'] = df_history.index.day
             df_history['day_of_week'] = df_history.index.dayofweek
             df_history['month'] = df_history.index.month
+            print(df_history)
+            # Normalize the history
+            df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
 
             print(df_history)
 
@@ -141,19 +150,31 @@ def on_message(client, userdata,message):
 
         if (state_checked >= 2):
         # Add the latest values to a numpy array 
-            if ((latest_value.size)/6 <= 1):
-                latest_value = np.append(latest_value, [state, hour, minute, day_of_month, day_of_week, month])
+            if ((latest_value.size)/5 < 1):
+                latest_value = np.append(latest_value, [state, hour, minute, day_of_week, month])
+                # reshape for normalization
+                latest_value = latest_value.reshape(1,-1)
                 # print(latest_value)
-            if ((latest_value.size/6) > 1):
-                latest_value = np.delete(latest_value, [0,1,2,3,4,5])
-
+                latest_value= scaler.transform(latest_value)
+                latest_value = latest_value.reshape(-1)
+                # print(latest_value)
+            else:
+                latest_value = np.delete(latest_value, [0,1,2,3,4])
+                latest_value = np.append(latest_value, [state, hour, minute, day_of_week, month])
+                # reshape for normalization
+                latest_value = latest_value.reshape(1,-1)
+                print("latest value before scaling: ", latest_value)
+                latest_value= scaler.transform(latest_value)
+                latest_value = latest_value.reshape(-1)
+                # print(latest_value)
+            print("latest value after scaling: ", latest_value)
             # print("latest value from the plug", latest_value)
             history_array = np.vstack((history_array, latest_value))
             # history_array = np.append((history_array), [state, hour, minute, day_of_month, day_of_week, month], axis=len(history_array + 1))
             history_array = np.delete(history_array, 0, axis=0)
             print(history_array)
-            print(history_array.shape)
-            prediction_array = history_array.reshape((1,2520,6))
+            # print(history_array.shape)
+            prediction_array = history_array.reshape((1,2520,5))
             prediction_test = model.predict(prediction_array)
             print(prediction_test)
 
@@ -163,7 +184,7 @@ def on_message(client, userdata,message):
 # Deze predicte gwn constant het gemiddelde
 #model = keras.models.load_model('../models/model_prediction/model_prediction_state_V1_day_week') # Load in the prediction model
 
-model = keras.models.load_model('../models/model_prediction/model_prediction_state_V1_no_norm')
+model = keras.models.load_model('../models/model_prediction/model_saved_statePrediction_15epoch3')
 
 Connected = False   #global variable for the state of the connection
   
@@ -184,7 +205,7 @@ user_input = input("Press enter to calculate the state for nomal usage")
 client.loop_start() #start the loop
 
 if (user_input == ""):
-    client.subscribe("tele/pc_plug/SENSOR")
+    client.subscribe("tele/box_plug/SENSOR")
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
