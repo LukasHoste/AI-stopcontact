@@ -20,7 +20,8 @@ def on_connect(client, userdata, flags, rc):
     else:
       print("Connection failed")
 
-CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer']
+# CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer']
+CLASSES=['laptop', 'monitor', 'phone_charge', 'printer', 'box', 'pc']
 
 prediction_arrays = {}
 # i = 0
@@ -109,7 +110,7 @@ def on_message(client, userdata, message):
 
 
 
-model = keras.models.load_model('../models/normalized_model/model_saved8.0')
+model = keras.models.load_model('../models/normalized_model/model_saved1.0_only_usage')
 
 Connected = False   #global variable for the state of the connection
   
