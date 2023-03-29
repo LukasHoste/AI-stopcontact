@@ -203,7 +203,7 @@ def on_message(client, userdata,message):
 # Deze predicte gwn constant het gemiddelde
 #model = keras.models.load_model('../models/model_prediction/model_prediction_state_V1_day_week') # Load in the prediction model
 
-model = keras.models.load_model('../models/model_prediction/prediction_fake_data_1') # Works but overfitted
+# model = keras.models.load_model('../models/model_prediction/prediction_fake_data_1') # Works but overfitted
 
 
 model = keras.models.load_model('../models/fake_random_tanh')
