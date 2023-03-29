@@ -48,17 +48,17 @@ loss 0.2084 vall_los 0.2125
 
 ### Shelly
 
-1. Shelly in-pluggen en verbinden met zijn hotspot: 192.168.33.1
-2. Dan onder internet & security de wifi mode instellen op iotlab
-3. Dan via de shelly app kan je zijn nieuwe IP terugvinden (zorg ervoor dat de cloud nog niet is uitgezet)
-4. Dan onder internet & security de cloud uitzetten en ten laatste onder de advanced developer settings, enable je de MQTT met de username hetzelfde als dat van de homeassitant + passw en de IP van de homeassistant.
+1. Shelly in-pluggen
+2. Ga in de shelly app naar add devices en voeg de geselecteerde apparaten toe
+3. In de shelly app kan je dan de ip van de plug vinden.
 
 ## Tasmota op shelly
 
 1. [Hier](https://templates.blakadder.com/shelly_plug_S.html) is de url voor de install te vinden (https://github.com/arendst/mgos-to-tasmota)
 2. Zoek in de lijst je device dat je wil flashen, kopieer de update URL en pas shellyip aan naar de ip van je shelly
 3. surf naar deze link, nu zou je plug moeten beginnen flashen -> volg de instructies van tasmota
-4. Ga in tasmota naar configuration -> configure Module en selecteer BlitzWolf SHP in de lijst, klik vervolgens op save.
+4. Ga in tasmota naar configuration -> configure template en plak de [configuration](https://templates.blakadder.com/shelly_plug_S.html) hier te vinden in het template veld en zet activate aan -> klik op save. Of ga naar configure Module en selecteer BlitzWolf SHP in de lijst, klik vervolgens op save.
+5. Ga in tasmota naar configuration -> configure MQTT, zet als host je mqtt broker (mqtt.devbit.be), zet als topic {naam plug}_plug en zet als full topic ai-stopcontact/plugs/%topic%/
 
 ## Sluimerverbruik apparaten
 
