@@ -82,6 +82,7 @@ def on_message(client, userdata,message):
 
     if (normal_usage_min == np.amin(normal_usage)):
         bytes_array3 = message.payload.decode('utf8')
+        print(bytes_array3)
         json_object3 = json.loads(bytes_array3)
         print(json_object3)
         state_checked = state_checked + 1
@@ -177,6 +178,8 @@ def on_message(client, userdata,message):
             prediction_array = history_array.reshape((1,2520,5))
             prediction_test = model.predict(prediction_array)
             print(prediction_test)
+            # if(prediction_test > 0.015):
+            #     client.publish(message.topic + "/usagePrediction", "on")
 
 # Deze gaf wel resultaat maar dan zouden we moeten kijken voor een treshold toe te voegen (model van Lukas zonder de normalisatie)
 # model = keras.models.load_model('../models/model_prediction/model_saved_statePredictionFake4min') # Load in the prediction model
@@ -184,7 +187,7 @@ def on_message(client, userdata,message):
 # Deze predicte gwn constant het gemiddelde
 #model = keras.models.load_model('../models/model_prediction/model_prediction_state_V1_day_week') # Load in the prediction model
 
-model = keras.models.load_model('../models/model_prediction/model_saved_statePrediction_15epoch3')
+model = keras.models.load_model('../models/model_prediction/quickTrainLukasTanh')
 
 Connected = False   #global variable for the state of the connection
   
