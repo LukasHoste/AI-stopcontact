@@ -36,7 +36,8 @@ df_history = pd.read_csv(r'../csv_files/dataset-na-krokus/pc_fake_test2_1w.csv',
 # Numpy array for the new values that were sent
 latest_value = np.zeros(shape=(1,0))
 
-scaler = joblib.load('scaler_fakedata_1.gz')
+# scaler = joblib.load('scaler_fakedata_1.gz')
+scaler = joblib.load('scaler_fake_tanh.gz')
 
 def on_message(client, userdata,message):
     global latest_value
@@ -138,7 +139,12 @@ def on_message(client, userdata,message):
             df_history['month'] = df_history.index.month
             print(df_history)
             # Normalize the history
-            df_history[['state','hour','minute', 'day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
+            # sigmoid
+            # df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
+            # tanh
+            df_history[['hour','minute','day_of_week','month']] = scaler.transform(df_history[['hour','minute','day_of_week','month']])
+            print("AFTER FIRST TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+
 
             print(df_history)
 
@@ -156,7 +162,13 @@ def on_message(client, userdata,message):
                 # reshape for normalization
                 latest_value = latest_value.reshape(1,-1)
                 # print(latest_value)
-                latest_value= scaler.transform(latest_value)
+                # sigmoid
+                # latest_value= scaler.transform(latest_value)
+                # tanh
+                print(latest_value)
+                print(latest_value[0,1:5])
+                print("BEFORE SECOND TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+                latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
                 latest_value = latest_value.reshape(-1)
                 # print(latest_value)
             else:
@@ -165,7 +177,11 @@ def on_message(client, userdata,message):
                 # reshape for normalization
                 latest_value = latest_value.reshape(1,-1)
                 print("latest value before scaling: ", latest_value)
-                latest_value= scaler.transform(latest_value)
+                # sigmoid
+                # latest_value= scaler.transform(latest_value)
+                # tanh
+                print("BEFORE THIRD TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+                latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
                 latest_value = latest_value.reshape(-1)
                 # print(latest_value)
             print("latest value after scaling: ", latest_value)
@@ -187,11 +203,10 @@ def on_message(client, userdata,message):
 # Deze predicte gwn constant het gemiddelde
 #model = keras.models.load_model('../models/model_prediction/model_prediction_state_V1_day_week') # Load in the prediction model
 
-<<<<<<< HEAD
 model = keras.models.load_model('../models/model_prediction/prediction_fake_data_1') # Works but overfitted
-=======
-model = keras.models.load_model('../models/model_prediction/quickTrainLukasTanh')
->>>>>>> a97677975a73e735e5339bb6c38aebdd0eb66503
+
+
+model = keras.models.load_model('../models/fake_random_tanh')
 
 Connected = False   #global variable for the state of the connection
   
