@@ -52,134 +52,111 @@ def on_message(client, userdata,message):
     global state
     global scaler
 
-    if (normal_usage.size < 1):
-        # user_input = input("Press enter to calculate the state for nomal usage")
-        bytes_array = message.payload.decode('utf8')
-        json_object = json.loads(bytes_array)
-        print(json_object)
-        normal_usage = np.append(normal_usage, [json_object["ENERGY"]["Power"]])
-        print("normal usage: ",  normal_usage)
-        # print(normal_usage)
-    elif (normal_usage.size == 1 and count == 0):
-        print("!!!!!!!!!!!!!!!!!!!!!!!!! YOU GOT 60 SECONDS TO CHANGE TO STANDBY CONSUMPTION !!!!!!!!!!!!!!!!!!!!!!!!!")
-        count += 1
-        print(count)
-    elif (normal_usage.size == 1 and count < 2):
-        count+=1
-    if (normal_usage.size == 1 and count == 2 and no_usage.size < 1):
-        # if(no_usage.size==0): input("Press enter to calculate the state for no/standby usage")
-        bytes_array2 = message.payload.decode('utf8')
-        json_object2 = json.loads(bytes_array2)
-        print(json_object2)
-        no_usage = np.append(no_usage, [json_object2["ENERGY"]["Power"]])
-        print("standby: " , no_usage)
-        # print(no_usage)
-    if (normal_usage.size == 1 and no_usage.size == 1):
-        normal_usage_min = np.amin(normal_usage)
-        print(normal_usage_min)
-        no_usage_max = np.amax(no_usage)
-        print(no_usage_max)
+    bytes_array = message.payload.decode('utf8')
+    print(bytes_array)
+    # json_object = json.loads(bytes_array)
+    # print(json_object)
 
-    if (normal_usage_min == np.amin(normal_usage)):
-        bytes_array3 = message.payload.decode('utf8')
-        print(bytes_array3)
-        json_object3 = json.loads(bytes_array3)
-        print(json_object3)
-        state_checked = state_checked + 1
-        print("THIS IS THE CHECK", state_checked)
-        # Take the timestamp and split it into hour, minute, day_of_the_month, day_of_the_week, month
-        time_stamp = json_object3["Time"]
-        time_stamp = pd.to_datetime(time_stamp, format='%Y.%m.%d %H:%M:%S') #The timestamp in a format
-        # print(time_stamp)
+    # if (normal_usage_min == np.amin(normal_usage)):
+    #     bytes_array3 = message.payload.decode('utf8')
+    #     print(bytes_array3)
+    #     json_object3 = json.loads(bytes_array3)
+    #     print(json_object3)
+    #     state_checked = state_checked + 1
+    #     print("THIS IS THE CHECK", state_checked)
+    #     # Take the timestamp and split it into hour, minute, day_of_the_month, day_of_the_week, month
+    #     time_stamp = json_object3["Time"]
+    #     time_stamp = pd.to_datetime(time_stamp, format='%Y.%m.%d %H:%M:%S') #The timestamp in a format
+    #     # print(time_stamp)
 
-        hour = time_stamp.hour
-        # print(hour)
-        minute = time_stamp.minute
-        # print(minute)
-        # day_of_month = time_stamp.day
-        # print(day_of_month)
-        day_of_week = time_stamp.weekday()
-        # print(day_of_week)
-        month = time_stamp.month
-        print(month)
+    #     hour = time_stamp.hour
+    #     # print(hour)
+    #     minute = time_stamp.minute
+    #     # print(minute)
+    #     # day_of_month = time_stamp.day
+    #     # print(day_of_month)
+    #     day_of_week = time_stamp.weekday()
+    #     # print(day_of_week)
+    #     month = time_stamp.month
+    #     print(month)
 
-        power = json_object3["ENERGY"]["Power"]
-        # Convert the power to the state
-        if (power >= normal_usage_min):
-            state = 1
-        if (power <= no_usage_max):
-            state = 0
+    #     power = json_object3["ENERGY"]["Power"]
+    #     # Convert the power to the state
+    #     if (power >= normal_usage_min):
+    #         state = 1
+    #     if (power <= no_usage_max):
+    #         state = 0
 
-        if (state_checked == 1):
-        # Create new timestamp
-            mqtt_last_time = json_object3["Time"]
+    #     if (state_checked == 1):
+    #     # Create new timestamp
+    #         mqtt_last_time = json_object3["Time"]
 
-            mqtt_last_time = pd.to_datetime(mqtt_last_time, format='%Y.%m.%d %H:%M:%S') #The timestamp in a format
+    #         mqtt_last_time = pd.to_datetime(mqtt_last_time, format='%Y.%m.%d %H:%M:%S') #The timestamp in a format
 
-            # Compute the timestamp one week before the last received time from MQTT
-            fake_data_start_time = mqtt_last_time - pd.Timedelta(days=7)
+    #         # Compute the timestamp one week before the last received time from MQTT
+    #         fake_data_start_time = mqtt_last_time - pd.Timedelta(days=7)
 
-            # Create a new timestamp sequence starting from fake_data_start_time and ending with mqtt_last_time, with a 4-minute increment
-            new_timestamps = pd.date_range(start=fake_data_start_time, end=mqtt_last_time, freq='4T')
+    #         # Create a new timestamp sequence starting from fake_data_start_time and ending with mqtt_last_time, with a 4-minute increment
+    #         new_timestamps = pd.date_range(start=fake_data_start_time, end=mqtt_last_time, freq='4T')
 
-            # Slice the new timestamp sequence to the same length as the original fake data
-            new_timestamps = new_timestamps[-len(df_history):]
+    #         # Slice the new timestamp sequence to the same length as the original fake data
+    #         new_timestamps = new_timestamps[-len(df_history):]
 
-            # Replace the timestamps in the fake data with the new timestamps
-            df_history['timestamp'] = new_timestamps
+    #         # Replace the timestamps in the fake data with the new timestamps
+    #         df_history['timestamp'] = new_timestamps
 
-            # Get it in the right shape for numpy array
-            df_history.index = pd.to_datetime(df_history['timestamp'], format='%d.%m.%Y %H:%M:%S')
+    #         # Get it in the right shape for numpy array
+    #         df_history.index = pd.to_datetime(df_history['timestamp'], format='%d.%m.%Y %H:%M:%S')
 
-            df_history['hour'] = df_history.index.hour
-            df_history['minute'] = df_history.index.minute
-            # df_history['day_of_month'] = df_history.index.day
-            df_history['day_of_week'] = df_history.index.dayofweek
-            df_history['month'] = df_history.index.month
-            print(df_history)
-            # Normalize the history
-            df_history[['state','hour','minute', 'day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
+    #         df_history['hour'] = df_history.index.hour
+    #         df_history['minute'] = df_history.index.minute
+    #         # df_history['day_of_month'] = df_history.index.day
+    #         df_history['day_of_week'] = df_history.index.dayofweek
+    #         df_history['month'] = df_history.index.month
+    #         print(df_history)
+    #         # Normalize the history
+    #         df_history[['state','hour','minute', 'day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
 
-            print(df_history)
+    #         print(df_history)
 
-            # Append the data to a numpy array
-            df_history = df_history.drop(columns=['timestamp'])
-            df_history.dropna()
-            history_array = np.array(df_history)
-            print(history_array)
-            print(history_array.shape)
+    #         # Append the data to a numpy array
+    #         df_history = df_history.drop(columns=['timestamp'])
+    #         df_history.dropna()
+    #         history_array = np.array(df_history)
+    #         print(history_array)
+    #         print(history_array.shape)
 
-        if (state_checked >= 2):
-        # Add the latest values to a numpy array 
-            if ((latest_value.size)/5 < 1):
-                latest_value = np.append(latest_value, [state, hour, minute, day_of_week, month])
-                # reshape for normalization
-                latest_value = latest_value.reshape(1,-1)
-                # print(latest_value)
-                latest_value= scaler.transform(latest_value)
-                latest_value = latest_value.reshape(-1)
-                # print(latest_value)
-            else:
-                latest_value = np.delete(latest_value, [0,1,2,3,4])
-                latest_value = np.append(latest_value, [state, hour, minute, day_of_week, month])
-                # reshape for normalization
-                latest_value = latest_value.reshape(1,-1)
-                print("latest value before scaling: ", latest_value)
-                latest_value= scaler.transform(latest_value)
-                latest_value = latest_value.reshape(-1)
-                # print(latest_value)
-            print("latest value after scaling: ", latest_value)
-            # print("latest value from the plug", latest_value)
-            history_array = np.vstack((history_array, latest_value))
-            # history_array = np.append((history_array), [state, hour, minute, day_of_month, day_of_week, month], axis=len(history_array + 1))
-            history_array = np.delete(history_array, 0, axis=0)
-            print(history_array)
-            # print(history_array.shape)
-            prediction_array = history_array.reshape((1,2520,5))
-            prediction_test = model.predict(prediction_array)
-            print(prediction_test)
-            # if(prediction_test > 0.015):
-            #     client.publish(message.topic + "/usagePrediction", "on")
+    #     if (state_checked >= 2):
+    #     # Add the latest values to a numpy array 
+    #         if ((latest_value.size)/5 < 1):
+    #             latest_value = np.append(latest_value, [state, hour, minute, day_of_week, month])
+    #             # reshape for normalization
+    #             latest_value = latest_value.reshape(1,-1)
+    #             # print(latest_value)
+    #             latest_value= scaler.transform(latest_value)
+    #             latest_value = latest_value.reshape(-1)
+    #             # print(latest_value)
+    #         else:
+    #             latest_value = np.delete(latest_value, [0,1,2,3,4])
+    #             latest_value = np.append(latest_value, [state, hour, minute, day_of_week, month])
+    #             # reshape for normalization
+    #             latest_value = latest_value.reshape(1,-1)
+    #             print("latest value before scaling: ", latest_value)
+    #             latest_value= scaler.transform(latest_value)
+    #             latest_value = latest_value.reshape(-1)
+    #             # print(latest_value)
+    #         print("latest value after scaling: ", latest_value)
+    #         # print("latest value from the plug", latest_value)
+    #         history_array = np.vstack((history_array, latest_value))
+    #         # history_array = np.append((history_array), [state, hour, minute, day_of_month, day_of_week, month], axis=len(history_array + 1))
+    #         history_array = np.delete(history_array, 0, axis=0)
+    #         print(history_array)
+    #         # print(history_array.shape)
+    #         prediction_array = history_array.reshape((1,2520,5))
+    #         prediction_test = model.predict(prediction_array)
+    #         print(prediction_test)
+    #         # if(prediction_test > 0.015):
+    #         #     client.publish(message.topic + "/usagePrediction", "on")
 
 # Deze gaf wel resultaat maar dan zouden we moeten kijken voor een treshold toe te voegen (model van Lukas zonder de normalisatie)
 # model = keras.models.load_model('../models/model_prediction/model_saved_statePredictionFake4min') # Load in the prediction model
@@ -204,12 +181,12 @@ client.on_message= on_message                      #attach function to callback
 
 client.connect(broker_address, port=port)          #connect to broker
 
-user_input = input("Press enter to calculate the state for nomal usage")
+# user_input = input("Press enter to calculate the state for nomal usage")
 
 client.loop_start() #start the loop
 
-if (user_input == ""):
-    client.subscribe("tele/latop_plug")
+# if (user_input == ""):
+client.subscribe("tele/laptop_plug/#")
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
