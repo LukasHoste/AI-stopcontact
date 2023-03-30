@@ -37,7 +37,7 @@ df_history = pd.read_csv(r'../csv_files/dataset-na-krokus/pc_fake_test2_1w.csv',
 latest_value = np.zeros(shape=(1,0))
 
 # scaler = joblib.load('scaler_fakedata_1.gz')
-scaler = joblib.load('scaler_fake_tanh.gz')
+scaler = joblib.load('scaler_synthetic_1.gz')
 
 def on_message(client, userdata,message):
     global latest_value
@@ -139,11 +139,12 @@ def on_message(client, userdata,message):
             df_history['month'] = df_history.index.month
             print(df_history)
             # Normalize the history
+
             # sigmoid
-            # df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
+            df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
             # tanh
-            df_history[['hour','minute','day_of_week','month']] = scaler.transform(df_history[['hour','minute','day_of_week','month']])
-            print("AFTER FIRST TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+            # df_history[['hour','minute','day_of_week','month']] = scaler.transform(df_history[['hour','minute','day_of_week','month']])
+            # print("AFTER FIRST TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
 
 
             print(df_history)
@@ -163,12 +164,14 @@ def on_message(client, userdata,message):
                 latest_value = latest_value.reshape(1,-1)
                 # print(latest_value)
                 # sigmoid
-                # latest_value= scaler.transform(latest_value)
+                latest_value= scaler.transform(latest_value)
+                
                 # tanh
-                print(latest_value)
-                print(latest_value[0,1:5])
-                print("BEFORE SECOND TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
-                latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
+                # print(latest_value)
+                # print(latest_value[0,1:5])
+                # print("BEFORE SECOND TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+                # latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
+
                 latest_value = latest_value.reshape(-1)
                 # print(latest_value)
             else:
@@ -178,10 +181,10 @@ def on_message(client, userdata,message):
                 latest_value = latest_value.reshape(1,-1)
                 print("latest value before scaling: ", latest_value)
                 # sigmoid
-                # latest_value= scaler.transform(latest_value)
+                latest_value= scaler.transform(latest_value)
                 # tanh
-                print("BEFORE THIRD TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
-                latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
+                # print("BEFORE THIRD TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+                # latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
                 latest_value = latest_value.reshape(-1)
                 # print(latest_value)
             print("latest value after scaling: ", latest_value)
@@ -205,8 +208,10 @@ def on_message(client, userdata,message):
 
 # model = keras.models.load_model('../models/model_prediction/prediction_fake_data_1') # Works but overfitted
 
+# Deze werkt ook
+# model = keras.models.load_model('../models/model_prediction/fake_prediction_state_synthetic')
 
-model = keras.models.load_model('../models/fake_random_tanh')
+model = keras.models.load_model('../models/model_synthetic/prediction_LSTM_Dropout')
 
 Connected = False   #global variable for the state of the connection
   
