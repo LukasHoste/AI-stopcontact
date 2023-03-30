@@ -60,6 +60,13 @@ loss 0.2084 vall_los 0.2125
 4. Ga in tasmota naar configuration -> configure template en plak de [configuration](https://templates.blakadder.com/shelly_plug_S.html) hier te vinden in het template veld en zet activate aan -> klik op save. Of ga naar configure Module en selecteer BlitzWolf SHP in de lijst, klik vervolgens op save.
 5. Ga in tasmota naar configuration -> configure MQTT, zet als host je mqtt broker (mqtt.devbit.be), zet als topic {naam plug}_plug en zet als full topic ai-stopcontact/plugs/%topic%/
 
+## Node Red naar influxDB
+
+1. klik op menu -> import en importeer het flows.json bestand.
+2. pas in de mqtt payload node de topic aan. (bv. ai-stopcontact/plugs/lamp_plug/SENSOR)
+3. pas in de influxDB node aan naar welke measurement de data geschreven wordt (bv. lamp_home)
+4. Indien je een andere mqtt broker gebruikt moet je in de mqtt node het server veld aanpassen.
+
 ## Sluimerverbruik apparaten
 
 1. Monitor : als de monitor uit is, is het sluimerverbruik = 0W. Waarschijnlijk door de powersave die op de monitor zit.
