@@ -84,3 +84,16 @@ loss 0.2084 vall_los 0.2125
 4. Soundboxen: als de boxen uitstaan dan heeft het een sluimerverbruik van 2W -> ingebruik 4-5W
 
 ![soundboxen_sluimerverbruik](./img/soudboxen_sluimerverbruik.png)
+
+## Classificatie script
+
+Het classificatie script haalt aan de hand van mqtt samples van een mqtt broker. Van zodra dat er genoeg samples ontvangen zijn kan het een predictie maken. Deze predictie wordt vervolgens teruggestuurd naar een subtopic van de topic waarvan de data komt.
+
+### Installatie
+
+```txt
+pip install numpy
+en meer
+```
+
+
