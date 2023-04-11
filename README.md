@@ -1,8 +1,10 @@
 # SlimmeStopcontactenVIVES
 
-[code - notebook](https://colab.research.google.com/drive/1pjBKEyINliCrKm2UD8AyNFnTkva3qZNF?usp=sharing)
+Dit mag weg ?
 
-## model tests
+[code - notebook](https://colab.research.google.com/drive/1pjBKEyINliCrKm2UD8AyNFnTkva3qZNF?usp=sharing) 
+
+## model tests (weglaten dit stuk ??)
 
 ### 2 hidden layers 8 -> 5 met rmsprop, batch_size = 8 en telkens relu 50 epochs
 
@@ -93,7 +95,7 @@ Het classificatie script haalt aan de hand van mqtt samples van een mqtt broker.
 
 ```txt
 pip install numpy
-en meer
+pip install paho-mqtt
+pip install tensorflow
+pip install keras ???
 ```
-
-
