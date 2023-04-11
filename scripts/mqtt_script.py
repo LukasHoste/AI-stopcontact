@@ -16,7 +16,6 @@ def on_connect(client, userdata, flags, rc):
         global Connected                #Use global variable
         Connected = True                #Signal connection
         client.subscribe("ai-stopcontact/plugs/+/SENSOR") # subscribe to all topics that are subtopics of ai-stopcontact/plugs and have a subtopic SENSOR
-        
     else:
       print("Connection failed")
 
@@ -51,7 +50,8 @@ def on_message(client, userdata, message):
     # append new values and make a prediction
     else:
         # add latest values
-        prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
+        prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)]
+        ,[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
         # json_object["ENERGY"]["Factor"],
         json_object["ENERGY"]["Power"],
@@ -72,11 +72,6 @@ def on_message(client, userdata, message):
         # get the class name
         print(CLASSES[class_index])
         print(pred_test)
-
-        # print(pred_test[0][class_index])
-        # if(pred_test[0][class_index] < 0.01):
-        #     print("hmm im not so sure about this prediction")
-
         # send the result of the prediction back to the topic
         client.publish(message.topic + "/prediction",CLASSES[class_index]) 
 
