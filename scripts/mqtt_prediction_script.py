@@ -38,7 +38,7 @@ df_history = pd.read_csv(r'../csv_files/synthetic-data/synthetic_data_fast_switc
 latest_value = np.zeros(shape=(1,0))
 
 # scaler = joblib.load('scaler_fakedata_1.gz')
-scaler = joblib.load('scaler_fake_transfer_sigmoid_3_datasets.gz')
+scaler = joblib.load('scaler_fake_transfer.gz')
 
 def on_message(client, userdata,message):
     global latest_value
@@ -166,9 +166,9 @@ def on_message(client, userdata,message):
                 # print(latest_value)
                 # sigmoid
                 # latest_value= scaler.transform(latest_value)
-
+                
                 # tanh
-                # print(latest_value)
+                print(latest_value)
                 print(latest_value[0,1:5])
                 print("BEFORE SECOND TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
                 latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
@@ -212,8 +212,7 @@ def on_message(client, userdata,message):
 # Deze werkt ook
 # model = keras.models.load_model('../models/model_prediction/fake_prediction_state_synthetic')
 
-# Not good en dit is zonder tanh
-model = keras.models.load_model('../models/model_synthetic/statePrediction_scaled_transfer_swish_sigmoid_3_datasets')
+model = keras.models.load_model('../models/model_synthetic/prediction_LSTM_transferLDrop')
 
 Connected = False   #global variable for the state of the connection
   
@@ -224,6 +223,8 @@ port = 1883  #Broker port
 # password = "stop123"            #Connection password
   
 client = mqttClient.Client("Prediction_2")               #create new instance
+# client.username_pw_set(user, password=password)    #set username and password
+# client = mqttClient.Client("oongaboonga")               #create new instance
 # client.username_pw_set(user, password=password)    #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
