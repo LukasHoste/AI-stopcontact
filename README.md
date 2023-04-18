@@ -1,8 +1,10 @@
 # SlimmeStopcontactenVIVES
 
-[code - notebook](https://colab.research.google.com/drive/1pjBKEyINliCrKm2UD8AyNFnTkva3qZNF?usp=sharing)
+Dit mag weg ?
 
-## model tests
+[code - notebook](https://colab.research.google.com/drive/1pjBKEyINliCrKm2UD8AyNFnTkva3qZNF?usp=sharing) 
+
+## model tests (weglaten dit stuk ??)
 
 ### 2 hidden layers 8 -> 5 met rmsprop, batch_size = 8 en telkens relu 50 epochs
 
@@ -84,3 +86,16 @@ loss 0.2084 vall_los 0.2125
 4. Soundboxen: als de boxen uitstaan dan heeft het een sluimerverbruik van 2W -> ingebruik 4-5W
 
 ![soundboxen_sluimerverbruik](./img/soudboxen_sluimerverbruik.png)
+
+## Classificatie script
+
+Het classificatie script haalt aan de hand van mqtt samples van een mqtt broker. Van zodra dat er genoeg samples ontvangen zijn kan het een predictie maken. Deze predictie wordt vervolgens teruggestuurd naar een subtopic van de topic waarvan de data komt.
+
+### Installatie
+
+```txt
+pip install numpy
+pip install paho-mqtt
+pip install tensorflow
+pip install keras ???
+```
