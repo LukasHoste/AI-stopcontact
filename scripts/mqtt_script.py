@@ -7,7 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 import joblib
 
-scaler = joblib.load('scaler.gz') # load the scaler, fitted during training
+scaler = joblib.load('scaler(17-04).gz') # load the scaler, fitted during training
   
 # function that determines what to do when connection to a broker is made
 def on_connect(client, userdata, flags, rc):
@@ -15,11 +15,11 @@ def on_connect(client, userdata, flags, rc):
         print("Connected to broker")
         global Connected                #Use global variable
         Connected = True                #Signal connection
-        client.subscribe("ai-stopcontact/plugs/+/SENSOR") # subscribe to all topics that are subtopics of ai-stopcontact/plugs and have a subtopic SENSOR
+        client.subscribe("ai-stopcontact/plugs/tele/+/SENSOR") # subscribe to all topics that are subtopics of ai-stopcontact/plugs and have a subtopic SENSOR
     else:
       print("Connection failed")
 
-CLASSES=['laptop', 'monitor', 'phone_charge', 'printer', 'box', 'pc'] # list of all the classes, this has to be in the same order as during training
+CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer','switch','tv'] # list of all the classes, this has to be in the same order as during training
 
 prediction_arrays = {} # dictionary for all the arrays that contain the data to make a prediction
 
@@ -38,7 +38,7 @@ def on_message(client, userdata, message):
 
     # as long ass the array does not reach its maximum value ((array size)/(number of parameters) <= (maximum size/number of parameters)-1)
     # , just add the new values
-    if((prediction_arrays[str(message.topic)].size/4) <= 19):
+    if((prediction_arrays[str(message.topic)].size/4) <= 29):
         print(prediction_arrays[str(message.topic)].size)
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
         json_object["ENERGY"]["Current"],
@@ -60,7 +60,7 @@ def on_message(client, userdata, message):
         # remove oldest values
         prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3])
         # reshape the array for prediction
-        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,80))
+        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,120))
         # scale/normalize the values in the array
         transformed_array = scaler.transform(prediction_arrays[str(message.topic)]) # copy to not change the original array
         # make a prediction
@@ -76,11 +76,11 @@ def on_message(client, userdata, message):
         client.publish(message.topic + "/prediction",CLASSES[class_index]) 
 
 
-model = keras.models.load_model('../models/normalized_model/model_saved1.0_only_usage') # loads the model
+model = keras.models.load_model('../models/classification_17-04') # loads the model
 
 Connected = False   #global variable for the state of the connection
   
-broker_address= "10.15.51.63"  #Broker address
+broker_address= "mqtt.devbit.be"  #Broker address
 port = 1883  #Broker port
 user = "VIVESStopContact"   #Connection username
 password = "stop123"    #Connection password
