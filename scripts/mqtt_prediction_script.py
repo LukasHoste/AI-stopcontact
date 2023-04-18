@@ -31,13 +31,14 @@ history_array = np.zeros(shape=(1,0))
 # year = 365.2425*day
 
 # Load in the history
-df_history = pd.read_csv(r'../csv_files/dataset-na-krokus/pc_fake_test2_1w.csv', parse_dates=['timestamp'])
+# df_history = pd.read_csv(r'../csv_files/dataset-na-krokus/pc_fake_test2_1w.csv', parse_dates=['timestamp'])
 
+df_history = pd.read_csv(r'../csv_files/synthetic-data/synthetic_data_fast_switch.csv', parse_dates=['timestamp'])
 # Numpy array for the new values that were sent
 latest_value = np.zeros(shape=(1,0))
 
 # scaler = joblib.load('scaler_fakedata_1.gz')
-scaler = joblib.load('scaler_synthetic_1.gz')
+scaler = joblib.load('scaler_fake_transfer_sigmoid_3_datasets.gz')
 
 def on_message(client, userdata,message):
     global latest_value
@@ -141,9 +142,9 @@ def on_message(client, userdata,message):
             # Normalize the history
 
             # sigmoid
-            df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
+            # df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
             # tanh
-            # df_history[['hour','minute','day_of_week','month']] = scaler.transform(df_history[['hour','minute','day_of_week','month']])
+            df_history[['hour','minute','day_of_week','month']] = scaler.transform(df_history[['hour','minute','day_of_week','month']])
             # print("AFTER FIRST TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
 
 
@@ -164,13 +165,13 @@ def on_message(client, userdata,message):
                 latest_value = latest_value.reshape(1,-1)
                 # print(latest_value)
                 # sigmoid
-                latest_value= scaler.transform(latest_value)
-                
+                # latest_value= scaler.transform(latest_value)
+
                 # tanh
                 # print(latest_value)
-                # print(latest_value[0,1:5])
-                # print("BEFORE SECOND TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
-                # latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
+                print(latest_value[0,1:5])
+                print("BEFORE SECOND TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+                latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
 
                 latest_value = latest_value.reshape(-1)
                 # print(latest_value)
@@ -181,10 +182,10 @@ def on_message(client, userdata,message):
                 latest_value = latest_value.reshape(1,-1)
                 print("latest value before scaling: ", latest_value)
                 # sigmoid
-                latest_value= scaler.transform(latest_value)
+                # latest_value= scaler.transform(latest_value)
                 # tanh
-                # print("BEFORE THIRD TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
-                # latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
+                print("BEFORE THIRD TRANSFORM HAHEROMHMLFIZHEFOIPHPZOEFHOPIZEHGOPHZERGOIH")
+                latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
                 latest_value = latest_value.reshape(-1)
                 # print(latest_value)
             print("latest value after scaling: ", latest_value)
@@ -211,17 +212,19 @@ def on_message(client, userdata,message):
 # Deze werkt ook
 # model = keras.models.load_model('../models/model_prediction/fake_prediction_state_synthetic')
 
-model = keras.models.load_model('../models/model_synthetic/prediction_LSTM_Dropout')
+# Not good en dit is zonder tanh
+model = keras.models.load_model('../models/model_synthetic/statePrediction_scaled_transfer_swish_sigmoid_3_datasets')
 
 Connected = False   #global variable for the state of the connection
   
-broker_address= "10.15.51.63"  #Broker address
+# broker_address= "10.15.51.63"  #Broker address
+broker_address = "mqtt.devbit.be"
 port = 1883  #Broker port
-user = "VIVESStopContact"       #Connection username
-password = "stop123"            #Connection password
+# user = "VIVESStopContact"       #Connection username
+# password = "stop123"            #Connection password
   
 client = mqttClient.Client("Prediction_2")               #create new instance
-client.username_pw_set(user, password=password)    #set username and password
+# client.username_pw_set(user, password=password)    #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
 
@@ -232,7 +235,8 @@ user_input = input("Press enter to calculate the state for nomal usage")
 client.loop_start() #start the loop
 
 if (user_input == ""):
-    client.subscribe("tele/box_plug/SENSOR")
+    # client.subscribe("tele/pc_plug/SENSOR")
+    client.subscribe("ai-stopcontact/plugs/pc_plug/SENSOR")
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
