@@ -16,7 +16,6 @@ from prediction_cl import MqttPrediction
 
 # Global variables
 normal_usage = np.zeros(shape=(1,0)) # Numpy array for all the normal usage values
-no_usage = np.zeros(shape=(1,0)) # Numpy array for all the values
 states = 0 # Variable for the normal state
 status_counter = 0 # A variable to go to the next if-statement, for example the history
 history_array = np.zeros(shape=(1,0)) # Numpy array for the history values
@@ -91,8 +90,8 @@ def on_message(client, userdata, message):
             history_array = np.delete(history_array, 0, axis=0) # Remove the first value from the history array
             prediction_array = history_array.reshape((1,2520,5)) # Reshape for the prediction
             print(prediction_array)
-            prediction_test = model.predict(prediction_array) # The prediction
-            print("The prediction of the next state: ", prediction_test)
+            pred = model.predict(prediction_array) # The prediction
+            print("The prediction of the next state: ", pred)
 
             # Some code to change te plug state
             # if(prediction_test > 0.015):
