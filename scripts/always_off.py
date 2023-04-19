@@ -28,16 +28,16 @@ print(grouped)
 print(proportions)
 
 # Identify the hours where the device is off all the time
-always_off_hours = proportions[proportions <= 0].index
-print(always_off_hours)
-always_off_hours = always_off_hours.values
-print(always_off_hours)
-always_off_hours = always_off_hours.tolist()
+always_on_hours = proportions[proportions > 0].index
+print(always_on_hours)
+always_on_hours = always_on_hours.values
+print(always_on_hours)
+always_on_hours = always_on_hours.tolist()
 
 # Convert the array to a JSON string
-array_str = json.dumps(always_off_hours)
+array_str = json.dumps(always_on_hours)
 
 # Publish the array string to an MQTT topic
 publish.single("ai-stopcontact/plugs/test", payload=array_str, hostname="mqtt.devbit.be")
 
-print("The device is always off during these hours:", always_off_hours)
+print("The device is always off during these hours:", always_on_hours)
