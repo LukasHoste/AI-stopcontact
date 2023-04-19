@@ -6,6 +6,10 @@ from ast import literal_eval
 import tensorflow as tf
 from tensorflow import keras
 import joblib
+import sys
+
+once = sys.argv[1]
+print(once)
 
 scaler = joblib.load('scaler(17-04).gz') # load the scaler, fitted during training
   
@@ -22,6 +26,7 @@ def on_connect(client, userdata, flags, rc):
 CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer','switch','tv'] # list of all the classes, this has to be in the same order as during training
 
 prediction_arrays = {} # dictionary for all the arrays that contain the data to make a prediction
+prediction_state = {}
 
 # how to handle a received message from the broker
 def on_message(client, userdata, message):
@@ -30,6 +35,8 @@ def on_message(client, userdata, message):
     if(not str(message.topic) in prediction_arrays):
         print("adding topic key to the dictionary :)")
         prediction_arrays[str(message.topic)] = np.zeros(shape=(1,0))
+        print("adding key to check if a prediction has already been made")
+        prediction_state[str(message.topic)] = False
 
     # convert the received data to a json_object
     bytes_array = message.payload.decode('utf8')
@@ -48,7 +55,7 @@ def on_message(client, userdata, message):
         ])
         print(prediction_arrays[str(message.topic)]) # print the current prediction array
     # append new values and make a prediction
-    else:
+    elif(not (prediction_state[str(message.topic)]) or not once):
         # add latest values
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)]
         ,[json_object["ENERGY"]["ApparentPower"],
@@ -74,7 +81,9 @@ def on_message(client, userdata, message):
         print(pred_test)
         # send the result of the prediction back to the topic
         client.publish(message.topic + "/prediction",CLASSES[class_index]) 
-
+        if(once):
+            print("this topic should only be done once")
+            prediction_state[str(message.topic)] = True
 
 model = keras.models.load_model('../models/classification_17-04') # loads the model
 
