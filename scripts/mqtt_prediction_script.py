@@ -51,7 +51,6 @@ def on_message(client, userdata, message):
 
     # First part is to determine the on/off-state of the device
     global normal_usage
-    global no_usage
     global states
     global status_counter
 
@@ -94,8 +93,10 @@ def on_message(client, userdata, message):
             print("The prediction of the next state: ", pred)
 
             # Some code to change te plug state
-            # if(prediction_test > 0.015):
-            #     client.publish(message.topic + "/usagePrediction", "on")
+            if(pred > 0.015):
+                client.publish(message.topic + "/usagePrediction", "on")
+            else: 
+                client.publish(message.topic + "/usagePrediction", "off")
         status_counter = status_counter + 1 # This is to go to the next if statement
 
 Connected = False   # global variable for the state of the connection
