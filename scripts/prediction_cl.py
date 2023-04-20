@@ -54,6 +54,7 @@ class MqttPrediction:
       # df_history['day_of_month'] = df_history.index.day
       df_history['day_of_week'] = df_history.index.dayofweek
       df_history['month'] = df_history.index.month
+      df_history['device'] = 2
 
       print(df_history)
       # Normalize the history

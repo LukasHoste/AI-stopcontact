@@ -22,13 +22,13 @@ history_array = np.zeros(shape=(1,0)) # Numpy array for the history values
 latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were sent
 
 # Load in the history
-df_history = pd.read_csv(r'../csv_files/synthetic-data/synthetic_data_fast_switch.csv', parse_dates=['timestamp'])
+df_history = pd.read_csv(r'../csv_files/multiple-devices-csv/synthetic_test_faked.csv', parse_dates=['timestamp'])
 
 # Load in the model
-model = keras.models.load_model('../models/model_prediction/fake_prediction_state_synthetic')
+model = keras.models.load_model('../models/models_multiple_devices/model_3_devices')
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('scaler_fake_transfer.gz')
+scaler = joblib.load('./scaler_multiple_devices/scaler_multiple_devices.gz')
 
 # Method to connect to the broker
 def on_connect(client, userdata, flags, rc):
@@ -77,17 +77,17 @@ def on_message(client, userdata, message):
             print("THIS IS PREDICTION NUMBER: ", status_counter)
             global latest_value
             print("This is the oldest mqtt message: ", latest_value) 
-            if ((latest_value.size)/5 < 1): 
-                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4]]) # Add the latest values from MQTT to a numpy array
+            if ((latest_value.size)/6 < 1): 
+                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 2]) # Add the latest values from MQTT to a numpy array
                 latest_value = mqtt_prediction.scale_mqtt_message(latest_value, scaler)
             else:
-                latest_value = np.delete(latest_value, [0,1,2,3,4]) # Delete the latest values first to get an empty numpy array
-                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4]]) # Add the latest values from MQTT to a numpy array
+                latest_value = np.delete(latest_value, [0,1,2,3,4,5]) # Delete the latest values first to get an empty numpy array
+                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 2]) # Add the latest values from MQTT to a numpy array
                 latest_value = mqtt_prediction.scale_mqtt_message(latest_value, scaler)
             print("This is the latest mqtt message: ", latest_value)
             history_array = np.vstack((history_array, latest_value)) # Add the latest value from MQTT to the history array
             history_array = np.delete(history_array, 0, axis=0) # Remove the first value from the history array
-            prediction_array = history_array.reshape((1,2520,5)) # Reshape for the prediction
+            prediction_array = history_array.reshape((1,2520,6)) # Reshape for the prediction
             print(prediction_array)
             pred = model.predict(prediction_array) # The prediction
             print("The prediction of the next state: ", pred)
