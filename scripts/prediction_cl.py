@@ -62,7 +62,7 @@ class MqttPrediction:
       # df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
 
       # When the scaling is done with tanh, then you need to uncomment the line below
-      df_history[['hour','minute','day_of_week','month']] = scaler.transform(df_history[['hour','minute','day_of_week','month']])
+      df_history[['hour','minute','day_of_week','month','device']] = scaler.transform(df_history[['hour','minute','day_of_week','month','device']])
       print(df_history)
 
       # Append the data to a numpy array
@@ -80,6 +80,6 @@ class MqttPrediction:
       # When the scaling is done with tanh, then you need to uncomment the lines below
       # print(latest_value)
       # print(latest_value[0,1:5])
-      latest_value[0,1:5] = scaler.transform(latest_value[0,1:5].reshape(1,-1))
+      latest_value[0,1:6] = scaler.transform(latest_value[0,1:6].reshape(1,-1))
       latest_value = latest_value.reshape(-1)
       return latest_value

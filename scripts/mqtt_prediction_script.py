@@ -25,10 +25,10 @@ latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were 
 df_history = pd.read_csv(r'../csv_files/multiple-devices-csv/synthetic_test_faked.csv', parse_dates=['timestamp'])
 
 # Load in the model
-model = keras.models.load_model('../models/models_multiple_devices/model_3_devices')
+model = keras.models.load_model('../models/models_multiple_devices/model_3_devices_hardsigmoid')
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('./scaler_multiple_devices/scaler_multiple_devices.gz')
+scaler = joblib.load('scaler_fake_tanh_synthetic.gz')
 
 # Method to connect to the broker
 def on_connect(client, userdata, flags, rc):
@@ -104,7 +104,7 @@ Connected = False   # global variable for the state of the connection
 broker_address = "mqtt.devbit.be"
 port = 1883  #Broker port
 
-client = mqttClient.Client("Prediction_2")         #create new instance
+client = mqttClient.Client("Prediction_2_awooga")         #create new instance
 # client.username_pw_set(user, password=password)  #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
