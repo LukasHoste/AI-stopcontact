@@ -9,7 +9,11 @@ import joblib
 import sys
 
 once = sys.argv[1]
-print(once)
+if(once == "True"):
+    once = True
+else:
+    once = False
+
 
 scaler = joblib.load('scaler(17-04).gz') # load the scaler, fitted during training
   
@@ -55,7 +59,7 @@ def on_message(client, userdata, message):
         ])
         print(prediction_arrays[str(message.topic)]) # print the current prediction array
     # append new values and make a prediction
-    elif(not (prediction_state[str(message.topic)]) or not once):
+    elif(not (prediction_state[str(message.topic)])):
         # add latest values
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)]
         ,[json_object["ENERGY"]["ApparentPower"],
@@ -81,7 +85,8 @@ def on_message(client, userdata, message):
         print(pred_test)
         # send the result of the prediction back to the topic
         client.publish(message.topic + "/prediction",CLASSES[class_index]) 
-        if(once):
+        if(once == True):
+            print(once)
             print("this topic should only be done once")
             prediction_state[str(message.topic)] = True
 
