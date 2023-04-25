@@ -18,6 +18,7 @@ from prediction_cl import MqttPrediction
 normal_usage = np.zeros(shape=(1,0)) # Numpy array for all the normal usage values
 states = 0 # Variable for the normal state
 status_counter = 0 # A variable to go to the next if-statement, for example the history
+message_counter = 0 # A variable
 history_array = np.zeros(shape=(1,0)) # Numpy array for the history values
 latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were sent
 
@@ -25,10 +26,17 @@ latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were 
 df_history = pd.read_csv(r'../csv_files/multiple-devices-csv/synthetic_test_faked.csv', parse_dates=['timestamp'])
 
 # Load in the model
+<<<<<<< HEAD
+model = keras.models.load_model('../models/models_multiple_devices/2devices_lukas')
+
+# Load in the scaler (this was saved from the notebook where the model was trained)
+scaler = joblib.load('scaler_2devices_lukas.gz')
+=======
 model = keras.models.load_model('../models/models_multiple_devices/model_3_devices_hardsigmoid')
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
 scaler = joblib.load('scaler_fake_tanh_synthetic.gz')
+>>>>>>> 744886fb7d8fd9c8d6521a76891330225406b47e
 
 # Method to connect to the broker
 def on_connect(client, userdata, flags, rc):
@@ -53,6 +61,7 @@ def on_message(client, userdata, message):
     global normal_usage
     global states
     global status_counter
+    global message_counter
 
     if (normal_usage.size < 1): # Determine what the normal usage of a device is.
         print(json_object)
@@ -61,6 +70,7 @@ def on_message(client, userdata, message):
 
     # Second part is to make the prediction 
     elif (normal_usage.size == 1):
+ 
         extracted_value = mqtt_prediction.extract_object(json_object, states) # Extracting the values from the json object
         print("These are the extracted values: ", extracted_value)
 
@@ -68,14 +78,16 @@ def on_message(client, userdata, message):
         if (status_counter == 0):
             states = mqtt_prediction.state_determination(normal_usage)
             print("This is the normal usage power: ", states)
+            print("The last message added to the history: ", json_object)
             history_dataset = mqtt_prediction.history_creation(json_object, df_history, scaler) # Creating our own history (one week)
             global history_array
             history_array = np.array(history_dataset) # Change the history dataset to a numpy array
 
         # When the history is created then the first prediction can be made
-        elif (status_counter >= 1):
+        elif (status_counter >= 1 and message_counter == 24):
             print("THIS IS PREDICTION NUMBER: ", status_counter)
             global latest_value
+            print("The new last message added to the history: ", json_object)
             print("This is the oldest mqtt message: ", latest_value) 
             if ((latest_value.size)/6 < 1): 
                 latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 2]) # Add the latest values from MQTT to a numpy array
@@ -97,7 +109,10 @@ def on_message(client, userdata, message):
                 client.publish(message.topic + "/usagePrediction", "on")
             else: 
                 client.publish(message.topic + "/usagePrediction", "off")
+            message_counter = 0
         status_counter = status_counter + 1 # This is to go to the next if statement
+        message_counter += 1
+        print("message counter is now: ", message_counter)
 
 Connected = False   # global variable for the state of the connection
   
