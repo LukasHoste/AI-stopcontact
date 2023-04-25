@@ -26,17 +26,10 @@ latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were 
 df_history = pd.read_csv(r'../csv_files/multiple-devices-csv/synthetic_test_faked.csv', parse_dates=['timestamp'])
 
 # Load in the model
-<<<<<<< HEAD
-model = keras.models.load_model('../models/models_multiple_devices/2devices_lukas')
+model = keras.models.load_model('../models/models_multiple_devices/model_2_devices')
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('scaler_2devices_lukas.gz')
-=======
-model = keras.models.load_model('../models/models_multiple_devices/model_3_devices_hardsigmoid')
-
-# Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('scaler_fake_tanh_synthetic.gz')
->>>>>>> 744886fb7d8fd9c8d6521a76891330225406b47e
+scaler = joblib.load('scaler_2_devices.gz')
 
 # Method to connect to the broker
 def on_connect(client, userdata, flags, rc):
@@ -90,11 +83,11 @@ def on_message(client, userdata, message):
             print("The new last message added to the history: ", json_object)
             print("This is the oldest mqtt message: ", latest_value) 
             if ((latest_value.size)/6 < 1): 
-                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 2]) # Add the latest values from MQTT to a numpy array
+                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 1]) # Add the latest values from MQTT to a numpy array
                 latest_value = mqtt_prediction.scale_mqtt_message(latest_value, scaler)
             else:
                 latest_value = np.delete(latest_value, [0,1,2,3,4,5]) # Delete the latest values first to get an empty numpy array
-                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 2]) # Add the latest values from MQTT to a numpy array
+                latest_value = np.append(latest_value, [extracted_value[0], extracted_value[1], extracted_value[2], extracted_value[3], extracted_value[4], 1]) # Add the latest values from MQTT to a numpy array
                 latest_value = mqtt_prediction.scale_mqtt_message(latest_value, scaler)
             print("This is the latest mqtt message: ", latest_value)
             history_array = np.vstack((history_array, latest_value)) # Add the latest value from MQTT to the history array
@@ -119,7 +112,7 @@ Connected = False   # global variable for the state of the connection
 broker_address = "mqtt.devbit.be"
 port = 1883  #Broker port
 
-client = mqttClient.Client("Prediction_2_awooga")         #create new instance
+client = mqttClient.Client("Prediction_2")         #create new instance
 # client.username_pw_set(user, password=password)  #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
