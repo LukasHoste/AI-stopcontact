@@ -31,7 +31,7 @@ class MqttPrediction:
       return state, hour, minute, day_of_week, month
 
   # Method which creates our own history with normalization
-  def history_creation(self, json_object, df_history, scaler):
+  def history_creation(self, json_object, df_history, scaler, device):
       mqtt_last_time = json_object["Time"]
       mqtt_last_time = pd.to_datetime(mqtt_last_time, format='%Y.%m.%d %H:%M:%S') #The timestamp in a format
 
@@ -65,10 +65,11 @@ class MqttPrediction:
       df_history[['hour','minute','day_of_week','month','device']] = scaler.transform(df_history[['hour','minute','day_of_week','month','device']])
       print(df_history)
 
+      df_with_timestamp = df_history
       # Append the data to a numpy array
       df_history = df_history.drop(columns=['timestamp'])
       df_history.dropna()
-      return df_history
+      return df_history, df_with_timestamp
 
   # Method that scales our latest message from the MQTT
   def scale_mqtt_message(self, latest_value, scaler):
