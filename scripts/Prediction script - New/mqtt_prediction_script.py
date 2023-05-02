@@ -26,10 +26,10 @@ latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were 
 df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
 
 # Load in the model
-model = keras.models.load_model('./model/model_2_devicesV4')
+model = keras.models.load_model('./model/2devices_weak_sloped')
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('./scaler/scaler_2_devicesV4.gz')
+scaler = joblib.load('./scaler/scaler_new.gz')
 
 # Method to connect to the broker
 def on_connect(client, userdata, flags, rc):
@@ -133,7 +133,7 @@ Connected = False   # global variable for the state of the connection
 broker_address = "mqtt.devbit.be"
 port = 1883  #Broker port
 
-client = mqttClient.Client("Prediction_2")         #create new instance
+client = mqttClient.Client("Prediction_2_")         #create new instance
 # client.username_pw_set(user, password=password)  #set username and password
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
