@@ -44,7 +44,7 @@ class MqttPrediction:
 
       return df_history
   
-  def scaled_history(self, history_dataset, scaler):
+  def scaled_history(self, history_dataset, scaler, device):
     # Get it in the right shape for numpy array
     scaled_history = history_dataset
     scaled_history.index = pd.to_datetime(scaled_history['timestamp'], format='%d.%m.%Y %H:%M:%S')
@@ -53,7 +53,7 @@ class MqttPrediction:
     # df_history['day_of_month'] = df_history.index.day
     scaled_history['day_of_week'] = scaled_history.index.dayofweek
     # df_history['month'] = df_history.index.month
-    scaled_history['device'] = 1
+    scaled_history['device'] = device
     # Normalize the history
     # When the scaling is done with sigmoid, then you need to uncomment the line below
     # df_history[['state','hour','minute','day_of_week','month']] = scaler.transform(df_history[['state','hour','minute','day_of_week','month']])
