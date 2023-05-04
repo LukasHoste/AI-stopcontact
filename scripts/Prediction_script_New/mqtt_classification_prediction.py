@@ -60,7 +60,8 @@ if(args.device == "laptop"):
 elif(args.device == "box"):
     df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
 else:
-    print("incorrect device detected")
+    print("incorrect device from argument")
+    exit()
 
 # Load in the model
 # model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
@@ -170,6 +171,8 @@ def on_message(client, userdata, message):
             device = 0
         else:
             print("incorrect device predicted stopping execution")
+	   # client.disconnect()
+	    #exit()
         print(device)
             
         print(pred_test)
@@ -221,6 +224,7 @@ def on_message(client, userdata, message):
             #history_dataset = history_dataset.append(new_row, ignore_index=True) # Add the latest time and state (+4min) to the original history
             history_dataset = history_dataset.drop(0) # Drop the first row from the original dataset
             print("THIS IS THE NEW HISTORY DATASET: ", history_dataset)
+            month = latest_time.month
             hour = latest_time.hour # extract the features of the latest time
             minute = latest_time.minute
             day_of_week = latest_time.weekday()
@@ -247,7 +251,7 @@ def on_message(client, userdata, message):
                 client.publish(message.topic + "/usagePrediction", "on")
             elif(pred < 0.6 and json_object["ENERGY"]["Power"] < states): 
                 client.publish(message.topic + "/usagePrediction", "off")
-            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]) + " ,hour = " + hour + " ,minute = " + minute + " ,day of the week = " + days_of_week[day_of_week])
+            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]) + " ,hour = " + str(hour) + " ,minute = " + str(minute) + " ,day of the week = " + days_of_week[day_of_week] + ", month = " + months_of_year[month])
             message_counter = 0
 
         status_counter = status_counter + 1 # This is to go to the next if statement
@@ -277,13 +281,13 @@ client.loop_start() #start the loop
 
 if (user_input == ""): # When the user presses enter, it will subscribe to the topic
     if(args.device == "box"):
-        client.subscribe("ai-stopcontact/plugs/tele/box_plug/SENSOR")
+        client.subscribe("ai-stopcontact/plugs/tele/opstelling_plug1/SENSOR")
         print("subscribed to box")
-        client.publish("ai-stopcontact/plugs/tele/box_plug/SENSOR/usagePrediction", "on")
+        client.publish("ai-stopcontact/plugs/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
     elif(args.device == "laptop"):
-        client.subscribe("ai-stopcontact/plugs/tele/laptop_plug/SENSOR")
+        client.subscribe("ai-stopcontact/plugs/tele/opstelling_plug2/SENSOR")
         print("subscribed to laptop")
-        client.publish("ai-stopcontact/plugs/tele/laptop_plug/SENSOR/usagePrediction", "on")
+        client.publish("ai-stopcontact/plugs/tele/opstelling_plug2/SENSOR/usagePrediction", "on")
 
 
 while Connected != True: #Wait for connection
