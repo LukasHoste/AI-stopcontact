@@ -100,19 +100,22 @@ def on_message(client, userdata, message):
         json_object["ENERGY"]["ReactivePower"]
         ])
         print(prediction_arrays[str(message.topic)]) # print the current prediction array
+        normal_usage = np.append(normal_usage, [json_object["ENERGY"]["Power"]]) # Append the normal usage values to a numpy array
     # append new values and make a prediction
     elif(not (prediction_state[str(message.topic)])):
+        print(normal_usage)
+        print(len(normal_usage))
         print("executing block two of classification (making the prediction)")
-        # add latest values
-        prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)]
-        ,[json_object["ENERGY"]["ApparentPower"],
-        json_object["ENERGY"]["Current"],
-        # json_object["ENERGY"]["Factor"],
-        json_object["ENERGY"]["Power"],
-        json_object["ENERGY"]["ReactivePower"]
-        ])
-        # remove oldest values
-        prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3])
+        # # add latest values
+        # prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)]
+        # ,[json_object["ENERGY"]["ApparentPower"],
+        # json_object["ENERGY"]["Current"],
+        # # json_object["ENERGY"]["Factor"],
+        # json_object["ENERGY"]["Power"],
+        # json_object["ENERGY"]["ReactivePower"]
+        # ])
+        # # remove oldest values
+        # prediction_arrays[str(message.topic)] = np.delete(prediction_arrays[str(message.topic)],[0,1,2,3])
         # reshape the array for prediction
         prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,120))
         # scale/normalize the values in the array
@@ -141,13 +144,13 @@ def on_message(client, userdata, message):
     
     # prediction part starts here
 
-    elif (normal_usage.size < 1): # Determine what the normal usage of a device is.
-        print(json_object)
-        normal_usage = np.append(normal_usage, [json_object["ENERGY"]["Power"]]) # Append the normal usage values to a numpy array
-        print("normal usage: ",  normal_usage)
+    # elif (normal_usage.size < 1): # Determine what the normal usage of a device is.
+    #     print(json_object)
+    #     normal_usage = np.append(normal_usage, [json_object["ENERGY"]["Power"]]) # Append the normal usage values to a numpy array
+    #     print("normal usage: ",  normal_usage)
 
     # Second part is to make the prediction 
-    elif (normal_usage.size == 1):
+    elif (normal_usage.size == 30):
  
         extracted_value = mqtt_prediction.extract_object(json_object, states) # Extracting the values from the json object
         print("These are the extracted values: ", extracted_value)
