@@ -53,16 +53,16 @@ months_of_year = ["January", "February", "March", "April", "May", "June", "July"
 
 # Load in the history
 # df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
-df_history = pd.read_csv(r'./data/pc_jarno_1w.csv', parse_dates=['timestamp'])
+df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/pc_jarno_1w.csv', parse_dates=['timestamp'])
 
 # Load in the model
-model = keras.models.load_model('./model/2devices_bidirectional')
-classification_model = keras.models.load_model('./model/classification_17-04') # loads the model
+model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
+classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_17-04') # loads the model
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('./scaler/scaler_new.gz')
+scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_new.gz')
 
-classification_scaler = joblib.load('./scaler/scaler_classification.gz') # load the scaler, fitted during training
+classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_classification.gz') # load the scaler, fitted during training
 
 device = 0
 # last_change = 0
@@ -200,7 +200,9 @@ def on_message(client, userdata, message):
             global scaled_history_array
             scaled_history_array = np.array(scaled_history) # Change the history dataset to a numpy array
             new_row = {'timestamp': latest_time, 'state': extracted_value}
-            history_dataset = history_dataset.append(new_row, ignore_index=True) # Add the latest time and state (+4min) to the original history
+            new_row_df = pd.DataFrame([new_row])
+            history_dataset = pd.concat([history_dataset,new_row_df],ignore_index=True)
+            #history_dataset = history_dataset.append(new_row, ignore_index=True) # Add the latest time and state (+4min) to the original history
             history_dataset = history_dataset.drop(0) # Drop the first row from the original dataset
             print("THIS IS THE NEW HISTORY DATASET: ", history_dataset)
             hour = latest_time.hour # extract the features of the latest time
