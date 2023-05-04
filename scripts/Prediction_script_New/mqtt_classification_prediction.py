@@ -14,7 +14,7 @@ import joblib
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
 
-# import argparse
+import argparse
 
 # Import class
 from prediction_cl import MqttPrediction
@@ -61,13 +61,14 @@ else:
     print("incorrect device detected")
 
 # Load in the model
-model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_17-04') # loads the model
+# model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
+model = keras.models.load_model('./model/2devices_bidirectional')
+classification_model = keras.models.load_model('./model/classification_17-04') # loads the model
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_new.gz')
+scaler = joblib.load('./scaler/scaler_new.gz')
 
-classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_classification.gz') # load the scaler, fitted during training
+classification_scaler = joblib.load('./scaler/scaler_classification.gz') # load the scaler, fitted during training
 
 device = 0
 # last_change = 0
@@ -184,7 +185,9 @@ def on_message(client, userdata, message):
         if (status_counter == 0):
             states = mqtt_prediction.state_determination(normal_usage)
             print("This is the normal usage power: ", states)
-            client.publish(message.topic + "/usagePrediction", "off")
+            if(args.device == "box"):
+                print("turning of box cause off in history")
+                client.publish(message.topic + "/usagePrediction", "off")
             # print("The last message added to the history: ", json_object)
             global history_dataset
             history_dataset = mqtt_prediction.history_creation(df_history) # Creating our own history (one week)
@@ -239,7 +242,7 @@ def on_message(client, userdata, message):
             if(pred > 0.7):
                 client.publish(message.topic + "/usagePrediction", "on")
                 # last_change = 0
-            elif(pred < 0.5 and json_object["ENERGY"]["Power"] < states): 
+            elif(pred < 0.6 and json_object["ENERGY"]["Power"] < states): 
                 client.publish(message.topic + "/usagePrediction", "off")
                 # last_change = 0
             message_counter = 0
@@ -270,7 +273,12 @@ user_input = input("Press enter to calculate the state for nomal usage")
 client.loop_start() #start the loop
 
 if (user_input == ""): # When the user presses enter, it will subscribe to the topic
-    client.subscribe("ai-stopcontact/plugs/tele/box_plug/SENSOR")
+    if(args.device == "box"):
+        client.subscribe("ai-stopcontact/plugs/tele/box_plug/SENSOR")
+        print("subscribed to box")
+    elif(args.device == "laptop"):
+        client.subscribe("ai-stopcontact/plugs/tele/laptop_plug/SENSOR")
+        print("subscribed to laptop")
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
