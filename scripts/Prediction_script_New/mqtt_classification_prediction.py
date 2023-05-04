@@ -124,6 +124,8 @@ def on_message(client, userdata, message):
     global status_counter
     global message_counter
     global device
+    global days_of_week
+    global months_of_year
 
     # ------------- classification -------------
 
@@ -245,7 +247,7 @@ def on_message(client, userdata, message):
                 client.publish(message.topic + "/usagePrediction", "on")
             elif(pred < 0.6 and json_object["ENERGY"]["Power"] < states): 
                 client.publish(message.topic + "/usagePrediction", "off")
-            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]))
+            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]) + " ,hour = " + hour + " ,minute = " + minute + " ,day of the week = " + days_of_week[day_of_week])
             message_counter = 0
 
         status_counter = status_counter + 1 # This is to go to the next if statement
