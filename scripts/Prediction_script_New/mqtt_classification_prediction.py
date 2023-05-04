@@ -54,21 +54,21 @@ months_of_year = ["January", "February", "March", "April", "May", "June", "July"
 # Load in the history
 # df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
 if(args.device == "laptop"):
-    df_history = pd.read_csv(r'./data/pc_jarno_1w.csv', parse_dates=['timestamp'])
+    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/pc_jarno_1w.csv', parse_dates=['timestamp'])
 elif(args.device == "box"):
-    df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
+    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
 else:
     print("incorrect device detected")
 
 # Load in the model
 # model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-model = keras.models.load_model('./model/2devices_bidirectional')
-classification_model = keras.models.load_model('./model/classification_17-04') # loads the model
+model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
+classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_17-04') # loads the model
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('./scaler/scaler_new.gz')
+scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_new.gz')
 
-classification_scaler = joblib.load('./scaler/scaler_classification.gz') # load the scaler, fitted during training
+classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_classification.gz') # load the scaler, fitted during training
 
 device = 0
 # last_change = 0
