@@ -245,7 +245,7 @@ def on_message(client, userdata, message):
                 client.publish(message.topic + "/usagePrediction", "on")
             elif(pred < 0.6 and json_object["ENERGY"]["Power"] < states): 
                 client.publish(message.topic + "/usagePrediction", "off")
-            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]) + " ,hour = " + str(extracted_value[1]) + " ,minute = " + str(extracted_value[2]) + " ,day of the week = " + days_of_week[extracted_value[3]] + " ,month =" + months_of_year[extracted_value[4]])
+            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]))
             message_counter = 0
 
         status_counter = status_counter + 1 # This is to go to the next if statement
