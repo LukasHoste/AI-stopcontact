@@ -31,6 +31,8 @@ def parseArguments():
     parser = argparse.ArgumentParser()
     # Optional arguments
     parser.add_argument("-de", "--device", help="choose a device box or laptop", default='box')
+    parser.add_argument("-mc", "--mqttclient", help="choose an mqtt client name", default='client')
+
     # Print version
     parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
     # Parse arguments
@@ -261,7 +263,7 @@ Connected = False   # global variable for the state of the connection
 broker_address = broker
 port = 1883  #Broker port
 
-client = mqttClient.Client("Prediction_2_hello")         #create new instance
+client = mqttClient.Client(args.mqttclient)         #create new instance
 # client.username_pw_set(user, password=password)  #set username and password if required
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
@@ -276,9 +278,12 @@ if (user_input == ""): # When the user presses enter, it will subscribe to the t
     if(args.device == "box"):
         client.subscribe("ai-stopcontact/plugs/tele/box_plug/SENSOR")
         print("subscribed to box")
+        client.publish("ai-stopcontact/plugs/tele/box_plug/SENSOR/usagePrediction", "on")
     elif(args.device == "laptop"):
         client.subscribe("ai-stopcontact/plugs/tele/laptop_plug/SENSOR")
         print("subscribed to laptop")
+        client.publish("ai-stopcontact/plugs/tele/laptop_plug/SENSOR/usagePrediction", "on")
+
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
