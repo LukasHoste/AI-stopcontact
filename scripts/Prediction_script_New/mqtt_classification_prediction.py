@@ -26,18 +26,18 @@ influx_pw = os.environ.get('INFLUXDB_PW')
 broker = os.environ.get('MQTT_BROKER')
 influxip = os.environ.get('INFLUX_ADDRESS')
 
-# def parseArguments():
-#     # Create argument parser
-#     parser = argparse.ArgumentParser()
-#     # Optional arguments
-#     parser.add_argument("-hi", "--history", help="send history to influxdb", type=bool, default=False)
-#     # Print version
-#     parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
-#     # Parse arguments
-#     args = parser.parse_args()
-#     return args
+def parseArguments():
+    # Create argument parser
+    parser = argparse.ArgumentParser()
+    # Optional arguments
+    parser.add_argument("-de", "--device", help="choose a device box or laptop", default='box')
+    # Print version
+    parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
+    # Parse arguments
+    args = parser.parse_args()
+    return args
 
-# args = parseArguments()
+args = parseArguments()
 # print(args.history)
 
 # Global variables
@@ -53,7 +53,12 @@ months_of_year = ["January", "February", "March", "April", "May", "June", "July"
 
 # Load in the history
 # df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
-df_history = pd.read_csv(r'./data/pc_jarno_1w.csv', parse_dates=['timestamp'])
+if(args.device == "laptop"):
+    df_history = pd.read_csv(r'./data/pc_jarno_1w.csv', parse_dates=['timestamp'])
+elif(args.device == "box"):
+    df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
+else:
+    print("incorrect device detected")
 
 # Load in the model
 model = keras.models.load_model('./model/2devices_bidirectional')
@@ -154,8 +159,12 @@ def on_message(client, userdata, message):
         print("predicted device: ",CLASSES[class_index])
         # for the demo there are only two devices thus we dont use the index to determine the device
         
-        if(CLASSES[class_index] == "box"):
-            device = 0 
+        if(CLASSES[class_index] == "box" and args.device == "box"):
+            device = 1
+        elif(CLASSES[class_index] == "laptop" and args.device == "laptop"):
+            device = 0
+        else:
+            print("incorrect device predicted stopping execution")
         print(device)
             
         print(pred_test)
@@ -247,7 +256,7 @@ Connected = False   # global variable for the state of the connection
 broker_address = broker
 port = 1883  #Broker port
 
-client = mqttClient.Client("Prediction_2_")         #create new instance
+client = mqttClient.Client("Prediction_2_hello")         #create new instance
 # client.username_pw_set(user, password=password)  #set username and password if required
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
