@@ -89,7 +89,7 @@ def influx_history(client, dataframe):
         timestamp = row[0]
         state = row[1]
         formatted_row = {
-            "measurement": "historytesting",
+            "measurement": "history" + args.device,
             "time": timestamp,
             "fields": {
                 "state": float(state)
