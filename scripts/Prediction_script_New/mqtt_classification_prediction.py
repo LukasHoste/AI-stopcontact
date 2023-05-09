@@ -32,7 +32,8 @@ def parseArguments():
     # Optional arguments
     parser.add_argument("-de", "--device", help="choose a device box or laptop", default='box')
     parser.add_argument("-mc", "--mqttclient", help="choose an mqtt client name", default='client')
-
+    # add the --help option to the parser
+    #parser.add_argument('--help', action='help', help='Show this help message and exit')
     # Print version
     parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
     # Parse arguments
