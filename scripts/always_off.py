@@ -37,7 +37,7 @@ always_on_hours = always_on_hours.tolist()
 # Convert the array to a JSON string
 array_str = json.dumps(always_on_hours)
 
-# Publish the array string to an MQTT topic
-publish.single("ai-stopcontact/plugs/test", payload=array_str, hostname="mqtt.devbit.be")
+# # Publish the array string to an MQTT topic
+# publish.single("ai-stopcontact/plugs/test", payload=array_str, hostname="mqtt.devbit.be")
 
-print("The device is always off during these hours:", always_on_hours)
+# print("The device is always off during these hours:", always_on_hours)

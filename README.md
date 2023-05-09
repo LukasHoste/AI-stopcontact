@@ -1,6 +1,6 @@
 # SlimmeStopcontactenVIVES
 
-## testen van optimizers
+## Classificatie geteste optimizers
 
 - sgd = niet goed, loss verandert niet goed
 - adagrad = niet goed, loss verandert vrijwel niet
@@ -15,8 +15,8 @@
 ### MQTT broker
 
 1. Install Mosquitto broker in de Add-on store.
-2. Dan naar integrations gaan en Mosquitto broker opzetten.
-3. MQTT explorer kijken als het werkt.
+2. Ga naar integrations en klik bij de MQTT integration op configure, klik op re-configure en voer de instellingen van je broker in.
+3. Indien de broker op home assistant loopt kan MQTT explorer gebruikt worden om te testen of de broker werkt.
 
 ### Oplossing Node-red bad gateway
 
@@ -37,6 +37,7 @@
 3. surf naar deze link, nu zou je plug moeten beginnen flashen -> volg de instructies van tasmota
 4. Ga in tasmota naar configuration -> configure template en plak de [configuration](https://templates.blakadder.com/shelly_plug_S.html) hier te vinden in het template veld en zet activate aan -> klik op save. Of ga naar configure Module en selecteer BlitzWolf SHP in de lijst, klik vervolgens op save.
 5. Ga in tasmota naar configuration -> configure MQTT, zet als host je mqtt broker (mqtt.devbit.be), zet als topic {naam plug}_plug en zet als full topic ai-stopcontact/plugs/%topic%/
+6. Ga in tasmota naar logging en zet 'Telemetry Period' op 10 (seconden).
 
 ### Node Red naar influxDB
 
@@ -67,7 +68,7 @@
 
 ### Classificatie script
 
-Het classificatie script haalt aan de hand van mqtt samples van een mqtt broker. Van zodra dat er genoeg samples ontvangen zijn kan het een predictie maken. Deze predictie wordt vervolgens teruggestuurd naar een subtopic van de topic waarvan de data komt.
+Het classificatie script haalt aan de hand van mqtt samples van een broker. Van zodra dat er genoeg samples ontvangen zijn kan het een predictie maken. Deze predictie wordt vervolgens teruggestuurd naar een subtopic van de topic waarvan de data komt. Deze predictie kan éénmaal of meerdere malen uitgevoerd worden.
 
 #### Installatie classificatie
 
@@ -94,19 +95,23 @@ pip install joblib
 pip install scikit-learn
 ```
 
+### Combinatie script
+
+Dit script combineerd de classificatie en voorspelling met elkaar. In dit script wordt het herkende apparaat gebruikt voor de voorspelling van de state.
+
 ### Always off script
 
-Aan de hand van dit script kan in een dataset gekeken worden op welke uren het apparaat gewoonlijk altijd uitstaat. Het resultaat hiervan wordt opgestuurd naar mqtt om door nodeRED gebruikt te kunnen worden.
+Aan de hand van dit script kan in een dataset gekeken worden op welke uren het apparaat gewoonlijk altijd uitstaat. Het is mogelijk om de bekomen uren naar mqtt te sturen zodat ze vervolgens door een andere applicatie gebruikt kunnen worden.
 
 ## Notebooks
 
 ### Classfication
 
-Deze notebook wordt gebruikt om een classificatie model te trainen. Dit model wordt gebruikt in het classificatie script om apparaten te herkennen.
+Dit notebook wordt gebruikt om een classificatie model te trainen. Dit model wordt gebruikt in het classificatie script om apparaten te herkennen.
 
 ### Prediction state
 
-Deze notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). Momenteel wordt gewerkt met transfer learning wat het model ertoe in staat stelt om 2 à 3 verschillende patronen te herkennen.
+Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). In onze simulatie wordt getraind op twee patronen, één voor een box en één voor een laptop.
 
 ## Opstelling
 
