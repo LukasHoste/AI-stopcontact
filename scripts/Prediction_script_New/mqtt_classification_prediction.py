@@ -286,9 +286,9 @@ if (user_input == ""): # When the user presses enter, it will subscribe to the t
         print("subscribed to box")
         client.publish("ai-stopcontact/plugs/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
     elif(args.device == "laptop"):
-        client.subscribe("ai-stopcontact/plugs/tele/opstelling_plug2/SENSOR")
+        client.subscribe("ai-stopcontact/plugs/tele/laptop_plug/SENSOR")
         print("subscribed to laptop")
-        client.publish("ai-stopcontact/plugs/tele/opstelling_plug2/SENSOR/usagePrediction", "on")
+        client.publish("ai-stopcontact/plugs/tele/laptop_plug/SENSOR/usagePrediction", "on")
 
 
 while Connected != True: #Wait for connection
