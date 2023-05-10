@@ -67,17 +67,19 @@ else:
 # Load in the model
 # model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
 model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_10-05') # loads the model
+classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_10-05_short') # loads the model
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
 scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_new.gz')
 
-classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_classification.gz') # load the scaler, fitted during training
+classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_classificationshort.gz') # load the scaler, fitted during training
 
 device = 0
 # last_change = 0
 
-CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer','switch','tv'] # list of all the classes, this has to be in the same order as during training
+# CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer','switch','tv'] # list of all the classes, this has to be in the same order as during training
+CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer']
+
 
 prediction_arrays = {} # dictionary for all the arrays that contain the data to make a prediction
 prediction_state = {}
@@ -139,7 +141,7 @@ def on_message(client, userdata, message):
         prediction_state[str(message.topic)] = False
 
     
-    if((prediction_arrays[str(message.topic)].size/4) <= 29):
+    if((prediction_arrays[str(message.topic)].size/4) <= 9):
         print("executing block one of classification")
         print(prediction_arrays[str(message.topic)].size)
         prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
@@ -153,7 +155,7 @@ def on_message(client, userdata, message):
     # append new values and make a prediction
     elif(not (prediction_state[str(message.topic)])):
         print("executing block two of classification (making the prediction)")
-        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,120))
+        prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,40))
         # scale/normalize the values in the array
         transformed_array = classification_scaler.transform(prediction_arrays[str(message.topic)]) # copy to not change the original array
         # make a prediction
