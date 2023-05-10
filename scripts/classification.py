@@ -15,7 +15,7 @@ else:
     once = False
 
 
-scaler = joblib.load('scaler(17-04).gz') # load the scaler, fitted during training
+scaler = joblib.load('scaler_classification.gz') # load the scaler, fitted during training
   
 # function that determines what to do when connection to a broker is made
 def on_connect(client, userdata, flags, rc):
@@ -90,7 +90,7 @@ def on_message(client, userdata, message):
             print("this topic should only be done once")
             prediction_state[str(message.topic)] = True
 
-model = keras.models.load_model('../models/classification_17-04') # loads the model
+model = keras.models.load_model('../models/classification_10-05') # loads the model
 
 Connected = False   #global variable for the state of the connection
   
