@@ -67,7 +67,7 @@ else:
 # Load in the model
 # model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
 model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification10-05') # loads the model
+classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_10-05') # loads the model
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
 scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_new.gz')
