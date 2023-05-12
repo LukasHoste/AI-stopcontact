@@ -1,47 +1,114 @@
 # Installatie en uitvoering
 
-Hieronder is er terug te vinden wat er moet geïnstalleerd worden en hoe de notebooks en scripts moeten uitgevoerd worden.
+Dit is een installatie en uitvoering document die volledig uitlegd hoe onze bachelorproef kan geïnstalleerd worden en kan worden uitgevoerd.
 
-## Installatie
+# 1. Installatie
 
-### Github
+## 1.1 Hoe Github installeren en de repository te clonen
 
-Alle uit te voeren code is te vinden op github. Github is een platform dat programmeurs toestaat om te bewaren en te beheren. Daarnaast laat het toe om aanpassingen aan de code te bewaren en te controleren. Om code van github te halen moet er eerst de ssh key van je apparaat op github toegevoegd worden. Indien je nog geen ssh key hebt, kan deze gegeneerd worden aan de hand van de onderstaande commando.
+Om de code van github te halen moet er eerst de ssh key van je apparaat op github toegevoegd worden. Indien je nog geen ssh key hebt, kan deze gegeneerd worden aan de hand van de onderstaande commando.
 
 ```txt
 ssh-keygen 
 ```
 
-Vervolgens kan je aan de hand van het volgende commando je ssh key kopiëren.
+Vervolgens kan je aan de hand van de onderstaande commando je ssh key kopiëren. Hierbij moet de **locatie bestand** nog vervangen worden naar de locatie waar de **.ssh** folder terug te vinden is.
 
 ```txt
 cat [locatie bestand]/.ssh/id_rsa.pub
 ```
 
-Op windows bevind het bestand zich in de user directory en op linux in de home directory. Vervolgens moet deze key toegevoegd worden op github onder settings “SSH and GPG keys”, selecteer hier new “ssh key” en plak je key. Nu de key toegevoegd is moet nog git geïnstalleerd worden voor de code opgehaald kan worden. Op windows kan git geïnstalleerd worden via de [volgende link](https://git-scm.com/download/win) en op Linux kan het geïnstalleerd worden met het volgende commando.
+Op windows bevind het bestand zich in de user directory en op linux in de home directory. Vervolgens moet deze key toegevoegd worden op github onder settings **SSH and GPG keys**, selecteer hier **new ssh key** en plak je EIGEN key. Nu de key toegevoegd is, moet git nog geïnstalleerd worden zodat de code opgehaald kan worden.
+
+1. Op windows kan git geïnstalleerd worden via de [volgende link](https://git-scm.com/download/win).
+
+2. Op Linux kan het geïnstalleerd worden met het volgende commando.
 
 ```txt
 sudo apt install git
 ```
 
-Om code van github te “clonen” kan nu op een repository op de code knop gedrukt worden waarna op ssh geklikt worden en de gegenereerde string kan gekopieerd worden. Aan de hand van het onderstaand commando kan de code opgehaald worden.
+Om code van github te “clonen” kan nu op een repository op de code knop gedrukt worden waarna op ssh geklikt worden en de gegenereerde string kan gekopieerd worden.
+
+![code_knop](./img/code_knop.png)
+
+Aan de hand van het onderstaand commando kan de code opgehaald worden. In de **gekopieerde string** komt hetgene die in de afbeelding bovenaan terug te vinden is. 
 
 ```txt
 git clone [gekopieerde string]
 ```
 
-## Uitvoering
+## 1.2 Python installatie
 
-### Trainen modellen
+Eerst zal voor de code uit te voeren python moeten geïnstalleerd zijn. 
+
+1. Python installeren voor Windows kan volgens [deze webpagina](https://www.python.org/downloads/).
+
+2. Python installeren voor linux kan volgens [deze webpagina](https://docs.python-guide.org/starting/install3/linux/).
+
+## 1.3 Pip installatie
+
+Pip wordt gebruikt om de modules/packages te installeren.
+
+1. Pip installeren voor Windows kan via de [volgende link](https://phoenixnap.com/kb/install-pip-windows)
+
+2. Pip installeren voor Linux kan via de [volgende link](https://www.redhat.com/sysadmin/install-python-pip-linux)
+
+## 1.4 Miniconda installatie
+
+Miniconda is **NIET EEN MUST-HAVE**, maar dit kan wel een voordeel zijn als je verschillende versies van modules/packages wilt gaan gebruiken.
+
+Eerst zal Miniconda moeten geïnstalleerd worden en dit kan volgens de [volgende link](https://docs.conda.io/en/latest/miniconda.html#:~:text=On%20Windows%2C%20macOS%2C%20and%20Linux,which%20does%20require%20administrator%20permissions.). Om na te gaan of de installatie gelukt is, kan dit via de terminal.
+
+![miniconda](./img/miniconda.png)
+
+Daarna kan miniconda gebruikt worden. Eerst moet er gekeken worden om een conda enviroment aan te maken. Dit kan via de onderstaande commando. Hierbij moet nog de **env_name** vervangen worden door een eigen gekozen naam van environment. Ook moet de **version** aangepast worden naar de versie van python dat gebruikt wil worden.
+
+```txt
+conda create --name env_name python=version
+```
+
+Daarna is de conda environment aangemaakt en kan je via het volgend commando dit gaan activeren.
+
+```txt
+conda activate env_name
+```
+
+Wanneer de conda environment geactiveerd is, kunnen nu modules/packages geïnstalleerd worden die **enkel** op deze environment gebruikt kan worden.
+
+Om uit de environment te gaan, kan gebruik gemaakt worden van het volgende commando.
+
+```txt
+conda deactivate
+```
+
+## 1.5 Requirements.txt file installatie
+
+**DEZE FILE IS NIET EEN MUST-HAVE!** Wanneer je het model zou willen laten trainen, gaat het hoogst waarschijnlijk niet automatisch trainen op de GPU. Door deze txt-file te installeren, zou dit ervoor moeten zorgen dat het zal trainen op de GPU. Deze file bevat namelijk verschillende versies van packages en modules.
+
+Om deze te installeren raden we aan om dit uit te voeren in een **apart conda environment**. Daarna moet u deze file lokaal hebben en het installeren kan volgens de onderstaande commando.
+
+```txt
+pip install -r requirements.txt
+```
+
+Om na te gaan of de packages correct geïnstalleerd zijn, kan je het volgende commando uitvoeren.
+
+```txt
+conda list
+```
+
+# 2. Uitvoering
+
+## 2.1 Trainen modellen
 
 Onder notebooks kunnen de jupyter notebooks gevonden worden die gebruikt werden voor het trainen van de twee AI-modellen.
 
-### Trainen van classificatie model
+### 2.1.1 Trainen van het classificatie model
 
-Voor het herkennen van apparaten wordt het … notebook gebruikt. Om dit notebook uit te voeren moet ten eerste python geïnstalleerd worden. Python is makkelijk te installeren via de download pagina op de officiële python website. Voor het trainen van de modellen werd telkens gebruik gemaakt van python 3.9.7. Vervolgens moeten modules geïnstalleerd worden die te vinden zijn in de onderstaande tabel.
+Voor het herkennen van apparaten wordt het … notebook gebruikt. Om dit notebook uit te voeren moet ten eerste python geïnstalleerd zijn. Vervolgens moeten modules geïnstalleerd worden die te vinden zijn in de onderstaande tabel.
 
 ```txt
-sudo apt install python3-pip
 python -m pip install -U matplotlib
 pip3 install numpy
 pip3 install joblib
@@ -58,14 +125,13 @@ for file in os.listdir("../data/28-03+afstands"):
 df = pd.read_csv("../data/28-03+afstands/" + objectClass + ".csv")
 ```
 
-Daarnaast moet het voldoen aan de structuur zoals besproken in ‘Benodigde data’. Indien je over meer of minder data beschikt is het een goed idee om de SAMPLES_PER_CLASS parameter respectief te verhogen of te verlagen. Ook kan het nodig zijn dat het aantal neuronen, de batch size, de dropout en het aantal epochs voor optimale prestatie van het model moeten aangepast worden.
+Daarnaast moet het voldoen aan de structuur zoals in onze data. Indien je over meer of minder data beschikt is het een goed idee om de SAMPLES_PER_CLASS parameter respectief te verhogen of te verlagen. Ook kan het nodig zijn dat het aantal neuronen, de batch size, de dropout en het aantal epochs voor optimale prestatie van het model moeten aangepast worden.
 
-### Trainen van gebruikersgedrag model
+### 2.1.2 Trainen van gebruikersgedrag model
 
 Voor het voorspellen van een gebruikersgedrag wordt het … notebook gebruikt. Om dit model te runnen, moeten de onderstaande modules geïnstalleerd zijn.
 
 ```txt
-sudo apt install python3-pip
 python -m pip install -U matplotlib
 pip3 install numpy
 pip3 install joblib
@@ -74,7 +140,7 @@ pip3 install tensorflow
 pip3 install -U scikit-learn
 ```
 
-Om eigen data te gebruiken moeten de onderstaande lijnen code aangepast worden, waarbij de ‘own_file’ zal moeten vervangen worden naar de naam van de eigen dataset.
+Om eigen data te gebruiken moeten de onderstaande lijnen code aangepast worden, waarbij de **own_file** zal moeten vervangen worden naar de naam van de eigen dataset.
 
 ```python
 df_pc = load_data(r'../data/multiple_devices/new_weeks/[own_file].csv')
@@ -83,7 +149,7 @@ df_box = load_data(r'../data/multiple_devices/new_weeks/[own_file].csv')
 
 Indien de historiek kleiner is dan een week of verspringt met een grotere of kleinere time step moet de waarde van de ‘time_steps’ variabele aangepast worden. Om het model optimaal te laten werken kunnen de lagen, het maken van de slope, de learning rate en de batch size aangepast worden.
 
-## Uitvoeren van scripts
+## 2.2 Uitvoeren van scripts
 
 Voor het uitvoeren van de scripts moeten ten eerste de onderstaande modules geïnstalleerd worden. Deze modules kunnen geïnstalleerd worden aan de hand van pip of pip3.
 
@@ -98,21 +164,36 @@ pip3 install influxdb
 pip3 install python-dotenv
 ```
 
-Vervolgens kunnen de scripts simpel uitgevoerd worden aan de hand van het commando [1]. Om het combinatie script uit te voeren met argumenten moet het commando gewijzigd worden aan de hand van het help commando [2].
+Vervolgens kunnen de scripts simpel uitgevoerd worden aan de hand van het onderstaande commando.
 
 ```txt
-python3 [naam bestand]
-python3 [naam bestand] –help
+python3 [naam script]
 ```
 
-In de verschillende scripts kunnen de modellen aangepast worden door in de lijnen [1] en [2] het pad naar het model aan te passen. Belangrijk bij het gebruiken van een ander model is dat hierbij ook de scaler moet aangepast worden. Dit kan aangepast worden in de lijnen [3] en [4]. In de scripts die een voorspelling maken kan de historiek die gebruikt wordt voor de simulatie aangepast worden in de lijnen [5].
+Om het combinatie script uit te voeren met argumenten moet het commando gewijzigd worden aan de hand van het help commando.
+
+```txt
+python3 [naam script] –help
+```
+
+In de verschillende scripts kunnen de modellen aangepast worden door in de onderstaande lijnen code het pad naar het model aan te passen.
 
 ```python
 model = keras.models.load_model('/[own_path]/[model_folder]')
 classification_model = keras.models.load_model('/[own_path]/[model_folder')
+```
 
+Belangrijk bij het gebruiken van een ander model is dat hierbij ook de scaler moet aangepast worden. Dit kan aangepast worden in de onderstaande lijnen.
+
+```python
 scaler = joblib.load('/[own_path]/[scaler_name].gz')
 classification_scaler = joblib.load('/[own_path]/[scaler_name].gz')
+```
 
+In de scripts die een voorspelling maken kan de historiek die gebruikt wordt voor de simulatie aangepast worden in één van de onderstaande lijnen.
+
+```python
 df_history = pd.read_csv(r'/[own_path]/[own_history].csv', parse_dates=['timestamp'])
 ```
+
+**Als dit script wordt uitgevoerd, zal er ook rekening moeten gehouden worden met de MQTT-broker. Hiervoor zal je dus moeten je eigen MQTT-broker installeren waarop de smartplugs hun data versturen. Dan zal je in het script het broker address moeten aanpassen.**
