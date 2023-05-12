@@ -1,5 +1,9 @@
 # SlimmeStopcontactenVIVES
 
+## Installation guide
+
+[installation guide](./installatie_uitvoering.md)
+
 ## Classificatie geteste optimizers
 
 - sgd = niet goed, loss verandert niet goed
@@ -97,6 +101,34 @@ Dit notebook wordt gebruikt om een classificatie model te trainen. Dit model wor
 Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). In onze simulatie wordt getraind op twee patronen, één voor een box en één voor een laptop.
 
 ## Opstelling
+
+hier foto opstelling
+
+## Dashboards
+
+### Classificatie dashboard
+
+![classificatie dashboard](./img/classificatie_dashboard.png)
+
+Het classificatie dashboard wordt gebruikt om te tonen welk apparaat het classificatie script herkend en welk apparaat zou moeten herkend worden.
+
+### Voorspelling dashboard
+
+![voorspelling dashboard](./img/prediction_dashboard.png)
+
+Op het voorspelling dashboard wordt getoond welke waarde momenteel voorspeld wordt, welk apparaat herkend werd en of het stopcontact momenteel aan of uit staat.
+
+### Historiek dashboard
+
+![historiek dashboard](./img/history_dashboard.png)
+
+Het historiek dashboard is een grafana dashboard dat gebruikt wordt om de historiek van de twee apparaten uit de simulatie te tonen.
+
+### Manuele controle dashboard
+
+![manuele controle dashboard](./img/manual_dahboard.png)
+
+Het manuele controle dashboard is een dashboard dat gebruikt wordt om de stopcontacten manueel aan te sturen en dus het automatisch aan- en uitgaan uit te schakelen.
 
 ### Touchscreen
 
