@@ -70,30 +70,13 @@
 
 Het classificatie script haalt aan de hand van mqtt samples van een broker. Van zodra dat er genoeg samples ontvangen zijn kan het een predictie maken. Deze predictie wordt vervolgens teruggestuurd naar een subtopic van de topic waarvan de data komt. Deze predictie kan éénmaal of meerdere malen uitgevoerd worden.
 
-#### Installatie classificatie
-
-```txt
-pip install numpy
-pip install paho-mqtt
-pip install tensorflow
-pip install keras
-pip install scikit-learn
-```
+![classificatie](./img/schema_classificatie.png)
 
 ### State predictie script
 
-Dit script...........
+Dit script kan aan de hand van een historiek voor een apparaat een voorspelling maken van de state van dat apparaat.
 
-#### Installatie state predictie
-
-```txt
-pip install numpy
-pip install paho-mqtt
-pip install tensorflow
-pip install keras
-pip install joblib
-pip install scikit-learn
-```
+![classificatie](./img/schema_voorspelling.png)
 
 ### Combinatie script
 
