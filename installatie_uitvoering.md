@@ -1,6 +1,6 @@
 # Installatie en uitvoering
 
-Dit is een installatie en uitvoering document die volledig uitlegd hoe onze bachelorproef kan geïnstalleerd worden en kan worden uitgevoerd.
+In dit document wordt de volledige uitvoering en installatie van onze bachelorproef uitgelegd.
 
 # 1. Installatie
 
@@ -32,7 +32,7 @@ Om code van github te “clonen” kan nu op een repository op de code knop gedr
 
 ![code_knop](./img/code_knop.png)
 
-Aan de hand van het onderstaand commando kan de code opgehaald worden. In de **gekopieerde string** komt hetgene die in de afbeelding bovenaan terug te vinden is. 
+Aan de hand van het onderstaand commando kan de code opgehaald worden. In de **gekopieerde string** komt hetgene die in de afbeelding bovenaan terug te vinden is.
 
 ```txt
 git clone [gekopieerde string]
@@ -40,7 +40,7 @@ git clone [gekopieerde string]
 
 ## 1.2 Python installatie
 
-Eerst zal voor de code uit te voeren python moeten geïnstalleerd zijn. 
+Eerst zal voor de code uit te voeren python moeten geïnstalleerd zijn.
 
 1. Python installeren voor Windows kan volgens [deze webpagina](https://www.python.org/downloads/).
 
@@ -196,4 +196,4 @@ In de scripts die een voorspelling maken kan de historiek die gebruikt wordt voo
 df_history = pd.read_csv(r'/[own_path]/[own_history].csv', parse_dates=['timestamp'])
 ```
 
-**Als dit script wordt uitgevoerd, zal er ook rekening moeten gehouden worden met de MQTT-broker. Hiervoor zal je dus moeten je eigen MQTT-broker installeren waarop de smartplugs hun data versturen. Dan zal je in het script het broker address moeten aanpassen.**
+**Om dit script uit te voeren moet rekening gehouden worden met de MQTT-broker. Je moet namelijk je eigen MQTT-broker installeren waarnaar de smartplugs hun data kunnen versturen. In de scripts moet vervolgens het broker address aangepast worden.**
