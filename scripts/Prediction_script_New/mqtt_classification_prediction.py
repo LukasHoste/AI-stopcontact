@@ -25,6 +25,7 @@ influx_user = os.environ.get('INFLUXDB_USER')
 influx_pw = os.environ.get('INFLUXDB_PW')
 broker = os.environ.get('MQTT_BROKER')
 influxip = os.environ.get('INFLUX_ADDRESS')
+mqtt_pw = os.environ.get('MQTT_PASS')
 
 def parseArguments():
     # Create argument parser
@@ -187,7 +188,7 @@ def on_message(client, userdata, message):
     # ------------ prediction ---------------
 
     # Second part is to make the prediction 
-    elif (normal_usage.size == 30):
+    elif (normal_usage.size == 10):
         extracted_value = mqtt_prediction.extract_object(json_object, states) # Extracting the values from the json object
         print("These are the extracted values: ", extracted_value)
 
@@ -272,7 +273,7 @@ broker_address = broker
 port = 1883  #Broker port
 
 client = mqttClient.Client(args.mqttclient)         #create new instance
-# client.username_pw_set(user, password=password)  #set username and password if required
+client.username_pw_set('vives', password=mqtt_pw)  #set username and password if required
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
 
@@ -288,9 +289,9 @@ if (user_input == ""): # When the user presses enter, it will subscribe to the t
         print("subscribed to box")
         client.publish("ai-stopcontact/plugs/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
     elif(args.device == "laptop"):
-        client.subscribe("ai-stopcontact/plugs/tele/laptop_plug/SENSOR")
+        client.subscribe("ai-stopcontact/tele/laptop_plug/SENSOR")
         print("subscribed to laptop")
-        client.publish("ai-stopcontact/plugs/tele/laptop_plug/SENSOR/usagePrediction", "on")
+        client.publish("ai-stopcontact/tele/laptop_plug/SENSOR/usagePrediction", "on")
 
 
 while Connected != True: #Wait for connection
