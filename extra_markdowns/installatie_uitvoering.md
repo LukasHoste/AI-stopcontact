@@ -30,7 +30,7 @@ sudo apt install git
 
 Om code van github te “clonen” kan nu op een repository op de code knop gedrukt worden waarna op ssh geklikt worden en de gegenereerde string kan gekopieerd worden.
 
-![code_knop](./img/code_knop.png)
+![code_knop](../img/code_knop.png)
 
 Aan de hand van het onderstaand commando kan de code opgehaald worden. In de **gekopieerde string** komt hetgene die in de afbeelding bovenaan terug te vinden is.
 
@@ -60,7 +60,7 @@ Miniconda is **NIET EEN MUST-HAVE**, maar dit kan wel een voordeel zijn als je v
 
 Eerst zal Miniconda moeten geïnstalleerd worden en dit kan volgens de [volgende link](https://docs.conda.io/en/latest/miniconda.html#:~:text=On%20Windows%2C%20macOS%2C%20and%20Linux,which%20does%20require%20administrator%20permissions.). Om na te gaan of de installatie gelukt is, kan dit via de terminal.
 
-![miniconda](./img/miniconda.png)
+![miniconda](../img/miniconda.png)
 
 Daarna kan miniconda gebruikt worden. Eerst moet er gekeken worden om een conda enviroment aan te maken. Dit kan via de onderstaande commando. Hierbij moet nog de **env_name** vervangen worden door een eigen gekozen naam van environment. Ook moet de **version** aangepast worden naar de versie van python dat gebruikt wil worden.
 

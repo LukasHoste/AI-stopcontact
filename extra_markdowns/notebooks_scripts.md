@@ -1,4 +1,4 @@
-# korte uitleg over notebooks & scripts
+# Korte uitleg over notebooks & scripts
 
 ## Notebooks
 
@@ -16,13 +16,13 @@ Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit mo
 
 Het classificatie script haalt aan de hand van mqtt samples van een broker. Van zodra dat er genoeg samples ontvangen zijn kan het een predictie maken. Deze predictie wordt vervolgens teruggestuurd naar een subtopic van de topic waarvan de data komt. Deze predictie kan éénmaal of meerdere malen uitgevoerd worden.
 
-![classificatie](./img/schema_classificatie.png)
+![classificatie](../img/schema_classificatie.png)
 
 ### State predictie script
 
 Dit script kan aan de hand van een historiek voor een apparaat een voorspelling maken van de state van dat apparaat.
 
-![classificatie](./img/schema_voorspelling.png)
+![classificatie](../img/schema_voorspelling.png)
 
 ### Combinatie script
 
