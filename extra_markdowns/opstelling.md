@@ -28,24 +28,24 @@ Om ervoor te zorgen dat het touchscreen werkt met twee schermen wordt bij opstar
 
 ### Classificatie dashboard
 
-![classificatie dashboard](./img/classificatie_dashboard.png)
+![classificatie dashboard](../img/classificatie_dashboard.png)
 
 Het classificatie dashboard wordt gebruikt om te tonen welk apparaat het classificatie script herkend en welk apparaat zou moeten herkend worden.
 
 ### Voorspelling dashboard
 
-![voorspelling dashboard](./img/prediction_dashboard.png)
+![voorspelling dashboard](../img/prediction_dashboard.png)
 
 Op het voorspelling dashboard wordt getoond welke waarde momenteel voorspeld wordt, welk apparaat herkend werd en of het stopcontact momenteel aan of uit staat.
 
 ### Historiek dashboard
 
-![historiek dashboard](./img/history_dashboard.png)
+![historiek dashboard](../img/history_dashboard.png)
 
 Het historiek dashboard is een grafana dashboard dat gebruikt wordt om de historiek van de twee apparaten uit de simulatie te tonen.
 
 ### Manuele controle dashboard
 
-![manuele controle dashboard](./img/manual_dahboard.png)
+![manuele controle dashboard](../img/manual_dahboard.png)
 
 Het manuele controle dashboard is een dashboard dat gebruikt wordt om de stopcontacten manueel aan te sturen en dus het automatisch aan- en uitgaan uit te schakelen.
