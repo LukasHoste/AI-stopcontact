@@ -118,6 +118,22 @@ Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit mo
 
 hier foto opstelling
 
+### lokaal wifi network
+
+Om een acess point op te zetten zonder een internetverbinding wordt gebruik gemaakt van create_ap. create_ap kan op de volgende wijze geïnstalleerd worden.
+
+```txt
+git clone https://github.com/oblique/create_ap
+cd create_ap
+make install
+```
+
+Om ervoor te zorgen dat bij het opstarten van de pc automatisch een access point opgezet wordt moet in het /usr/lib/systemd/system/create_ap.service bestand het execstart commando aangepast worden naar een commando van het volgende type '/usr/bin/create_ap -n "interface" "AP naam" "wachtwoord"'.
+
+### touchscreen met twee schermen
+
+Om ervoor te zorgen dat het touchscreen werkt met twee schermen wordt bij opstarten het touchscreen.sh script uitgevoerd. Het wordt uitegevoerd aan de hand van "startup application" in Ubuntu. Het script bevat één simpel commando namelijk 'xinput map-to-output "id" "output"'. Het correcte id kan gevonden worden aan de hand van het xinput commando en de output parameter is bijvoorbeeld HDMI-1.
+
 ## Dashboards
 
 ### Classificatie dashboard
