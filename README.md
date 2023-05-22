@@ -1,4 +1,36 @@
-# SlimmeStopcontactenVIVES
+# Ontwikkelen van een AI-stopcontact
+
+De doelstelling van deze bachelorproef was om op een innovatieve manier het sluimerverbruik van verschillende toestellen te verminderen. Hiervoor werd er gebruik gemaakt van artificiële intelligentie.
+
+Hiervoor werd ten eerste onderzoek uitgevoerd naar het sluimerverbruik van apparaten. Om een stopcontact automatisch aan en uit te zetten moet het sluimerverbruik namelijk duidelijk onderscheidbaar zijn van het normaal verbruik.
+
+## Sluimerverbruik apparaten
+
+1. Monitor : als de monitor uit is, is het sluimerverbruik = 0W. Waarschijnlijk door de powersave die op de monitor zit.
+
+![monitor_sluimerverbruik](./img/monitor_sluimerverbruik.png)
+
+2. Printer: als het in standby uiteindelijk komt is het 5W. (<5.5)
+
+![printer_sluimerverbruik](./img/printer_sluimerverbruik.png)
+
+3. Computer (van school): als de computer uit is dan heeft het een sluimerverbruik van ong. 1W
+
+![computer_sluimerverbruik](./img/computer_sluimerverbruik.png)
+
+4. Soundboxen: als de boxen uitstaan dan heeft het een sluimerverbruik van 2W -> ingebruik 4-5W
+
+![soundboxen_sluimerverbruik](./img/soudboxen_sluimerverbruik.png)
+
+De artificiële intelligentie zal eerst en vooral gaan herkennen welk toestel er zich momenteel bevindt in het stopcontact. Om het toestel te herkennen wordt gebruik gemaakt van een simpel classificatiemodel. Dit model herkent apparaten aan de hand van het effectief vermogen, reactief vermogen, actief vermogen en de stroom. Van deze parameters worden een bepaald aantal samples genomen die als input van het model dienen. Dit model kan slechts een gelimiteerd aantal apparaten herkennen. Hoe meer apparaten het model moet kunnen herkennen hoe slechter de predictie wordt. Om dit probleem op te lossen kan het aantal samples data dat genomen wordt vergroot worden of kan gebruik worden van een LSTM sequence classificatie model. Daarna wordt het gebruikersgedrag opgenomen, hiermee kan de AI een aagneleerd patroon herkennen. Vervolgens zal de AI aan de hand van het herkende patroon een voorspelling maken van de volgende status van het stopcontact. Aan de hand hiervan wordt kan het stopcontact automatisch aan en uitgezet worden. Voor deze AI werd gebruik gemaakt van een LSTM/Long Short Term Memory model.
+
+![LSTM](./img/LSTM.png)
+Een LSTM model neemt als input een historiek. Deze historiek kan bestaan uit één of meerdere parameters. Voor ons model werd gebruik gemaakt van de dag van de week, het uur, de minuut en de status op dat moment. Om uit deze historiek te leren wordt in een LSTM model gebruik gemaakt van drie gates. Ten eerste bepaald de input gate welke informatie uit de gekregen historiek belangrijk is voor de voorspelling. Ten tweede bepaald de forget gate welke informatie van vorige voorspellingen nog belangrijk is en dus wel of niet uit het geheugen mag verwijderd worden. Ten laatste bepaalt de output gate welke informatie welke informatie van de huidige voorspelling opgeslagen moet worden.
+
+Om ervoor te zorgen dat het LSTM model voor meerdere apparaten een patroon kan herkennen en voorspellen werd een apparaat parameter toegevoegd. De waarde van deze parameter wordt bepaald aan de hand van het classificatie model en staat het model ertoe in staat om verschillende apparaten van elkaar te onderscheiden. Het ontwikkelde model is er toe in staat om voor een printer, opladende gsm, laptop, pc en speaker een voorspelling te maken. Het model werd voor elk van deze apparaten één patroon aangeleerd. Om ervoor te zorgen dat de voorspellingen van het model voldoende vlug veranderingen vertonen werden de hoeken van het patroon waarmee geleerd wordt afgerond. Om het model uit te breiden kunnen meer apparaten toegevoegd worden en moet een methode gevonden worden om voor elk apparaat meerdere patronen aan te leren.
+
+Ten slotte werd er een opstelling gemaakt waarop alles te zien is en ook volledig bediend kan worden met een touchscreen.
+Voor de artificiële intelligentie werden er twee modellen ontworpen. Het eerste model wordt gebruikt om het toestel dat zich in het stopcontact bevindt te herkennen. Om het model te leren is er data nodig. Hiervoor werd het verbruik van verschillende toestellen opgemeten. Het tweede model zal het gebruikerspatroon herkennen om de plug aan of uit te zetten. Om het patroon te leren, werd er data opgemeten van een gebruiker en werd synthetische data aangemaakt.
 
 ## Installation guide
 
@@ -49,24 +81,6 @@
 2. pas in de mqtt payload node de topic aan. (bv. ai-stopcontact/plugs/lamp_plug/SENSOR)
 3. pas in de influxDB node aan naar welke measurement de data geschreven wordt (bv. lamp_home)
 4. Indien je een andere mqtt broker gebruikt moet je in de mqtt node het server veld aanpassen.
-
-## Sluimerverbruik apparaten
-
-1. Monitor : als de monitor uit is, is het sluimerverbruik = 0W. Waarschijnlijk door de powersave die op de monitor zit.
-
-![monitor_sluimerverbruik](./img/monitor_sluimerverbruik.png)
-
-2. Printer: als het in standby uiteindelijk komt is het 5W. (<5.5)
-
-![printer_sluimerverbruik](./img/printer_sluimerverbruik.png)
-
-3. Computer (van school): als de computer uit is dan heeft het een sluimerverbruik van ong. 1W
-
-![computer_sluimerverbruik](./img/computer_sluimerverbruik.png)
-
-4. Soundboxen: als de boxen uitstaan dan heeft het een sluimerverbruik van 2W -> ingebruik 4-5W
-
-![soundboxen_sluimerverbruik](./img/soudboxen_sluimerverbruik.png)
 
 ## Scripts
 
