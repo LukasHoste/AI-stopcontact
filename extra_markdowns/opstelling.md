@@ -18,6 +18,12 @@ Om ervoor te zorgen dat bij het opstarten van de pc automatisch een access point
 /usr/bin/create_ap -n "interface" "AP naam" "wachtwoord"
 ```
 
+### Remote access
+
+Doordat de opstelling op een lokaal netwerk zit, kan er moeilijk remote access gebeuren met TeamViewer. Daardoor maken we gebruik van AnyDesk, om een remote access te krijgen van de opstelling. Op die manier kunnen we ook de dashboards op zijn plaats zetten.
+
+Hiervoor zal je nog **AnyDesk** moeten installeren via [deze link](https://anydesk.com/nl)
+
 ### Touchscreen
 
 Om het touchscreen te gebruiken moet het ten eerste verbonden zijn met het te bedienen apparaat.
