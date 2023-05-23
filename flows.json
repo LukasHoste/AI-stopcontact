@@ -1,1 +1,2323 @@
-[{"id":"16f1b123.b6bbdf","type":"mqtt in","z":"3754a753.818db8","name":"MQTT Payload topic","topic":"ai-stopcontact/plugs/pc_plug/SENSOR","qos":"1","datatype":"auto-detect","broker":"9461aa5f2c9a9e98","nl":false,"rap":false,"inputs":0,"x":390,"y":160,"wires":[["0856b0b76f2496cf","907d212b30393f8b"]]},{"id":"b6d7281e.aa3328","type":"debug","z":"3754a753.818db8","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","targetType":"msg","statusVal":"","statusType":"auto","x":790,"y":220,"wires":[]},{"id":"e4786363.dc40d","type":"influxdb out","z":"3754a753.818db8","influxdb":"2ad5f36107cb75c1","name":"Write to InfluxDB school pc","measurement":"school_pc","precision":"","retentionPolicy":"","database":"database","precisionV18FluxV20":"ms","retentionPolicyV18Flux":"","org":"organisation","bucket":"bucket","x":840,"y":160,"wires":[]},{"id":"0856b0b76f2496cf","type":"debug","z":"3754a753.818db8","d":true,"name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","targetType":"msg","statusVal":"","statusType":"auto","x":430,"y":240,"wires":[]},{"id":"907d212b30393f8b","type":"change","z":"3754a753.818db8","name":"","rules":[{"t":"set","p":"payload","pt":"msg","to":"payload.ENERGY","tot":"msg"}],"action":"","property":"","from":"","to":"","reg":false,"x":600,"y":160,"wires":[["e4786363.dc40d","b6d7281e.aa3328"]]},{"id":"9461aa5f2c9a9e98","type":"mqtt-broker","name":"devbit","broker":"mqtt.devbit.be","port":"1883","clientid":"","autoConnect":true,"usetls":false,"protocolVersion":"4","keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","birthMsg":{},"closeTopic":"","closeQos":"0","closePayload":"","closeMsg":{},"willTopic":"","willQos":"0","willPayload":"","willMsg":{},"userProps":"","sessionExpiry":""},{"id":"2ad5f36107cb75c1","type":"influxdb","hostname":"127.0.0.1","port":"8086","protocol":"http","database":"plug_database","name":"plug_database","usetls":false,"tls":"","influxdbVersion":"1.x","url":"http://localhost:8086","rejectUnauthorized":true}]
+[
+  {
+      "id": "bf7d14be5cda67b6",
+      "type": "tab",
+      "label": "presence detection",
+      "disabled": false,
+      "info": "",
+      "env": []
+  },
+  {
+      "id": "3754a753.818db8",
+      "type": "tab",
+      "label": "stopcontact",
+      "disabled": false,
+      "info": ""
+  },
+  {
+      "id": "5b6aaa0b50acdda9",
+      "type": "tab",
+      "label": "startup plugs",
+      "disabled": false,
+      "info": "",
+      "env": []
+  },
+  {
+      "id": "62d6077271c66fe0",
+      "type": "tab",
+      "label": "Jarno Home",
+      "disabled": false,
+      "info": "",
+      "env": []
+  },
+  {
+      "id": "340e8bad77b94818",
+      "type": "tab",
+      "label": "Lukas Home",
+      "disabled": false,
+      "info": "",
+      "env": []
+  },
+  {
+      "id": "d4da0bbd.bfcad8",
+      "type": "server",
+      "name": "Home Assistant",
+      "addon": true,
+      "rejectUnauthorizedCerts": true,
+      "ha_boolean": "",
+      "connectionDelay": false,
+      "cacheJson": false,
+      "heartbeat": false,
+      "heartbeatInterval": "",
+      "statusSeparator": "",
+      "enableGlobalContextStore": false
+  },
+  {
+      "id": "3a09552c.f19afa",
+      "type": "mqtt-broker",
+      "name": "",
+      "broker": "localhost",
+      "port": "1883",
+      "clientid": "",
+      "autoConnect": true,
+      "usetls": false,
+      "compatmode": false,
+      "protocolVersion": "4",
+      "keepalive": "60",
+      "cleansession": true,
+      "birthTopic": "",
+      "birthQos": "0",
+      "birthPayload": "",
+      "birthMsg": {},
+      "closeTopic": "",
+      "closeQos": "0",
+      "closePayload": "",
+      "closeMsg": {},
+      "willTopic": "",
+      "willQos": "0",
+      "willPayload": "",
+      "willMsg": {},
+      "userProps": "",
+      "sessionExpiry": ""
+  },
+  {
+      "id": "c416a097.55c75",
+      "type": "influxdb",
+      "hostname": "127.0.0.1",
+      "port": "8086",
+      "protocol": "http",
+      "database": "cdem",
+      "name": "",
+      "usetls": false,
+      "tls": "",
+      "influxdbVersion": "1.x",
+      "url": "http://localhost:8086",
+      "rejectUnauthorized": true
+  },
+  {
+      "id": "a8a853da9080d964",
+      "type": "influxdb",
+      "hostname": "127.0.0.1",
+      "port": "8086",
+      "protocol": "http",
+      "database": "plug_data",
+      "name": "",
+      "usetls": false,
+      "tls": "",
+      "influxdbVersion": "1.x",
+      "url": "http://localhost:8086",
+      "rejectUnauthorized": true
+  },
+  {
+      "id": "9d9ad3f4.49ce7",
+      "type": "influxdb",
+      "hostname": "127.0.0.1",
+      "port": "8086",
+      "protocol": "http",
+      "database": "nodered",
+      "name": "",
+      "usetls": false,
+      "tls": "",
+      "influxdbVersion": "1.x"
+  },
+  {
+      "id": "b144405e.a9f63",
+      "type": "mqtt-broker",
+      "name": "Mayfield MQTT",
+      "broker": "10.1.1.34",
+      "port": "1883",
+      "clientid": "nodered",
+      "usetls": false,
+      "compatmode": true,
+      "keepalive": "60",
+      "cleansession": true,
+      "birthTopic": "",
+      "birthQos": "0",
+      "birthPayload": "",
+      "closeTopic": "",
+      "closeQos": "0",
+      "closePayload": "",
+      "willTopic": "",
+      "willQos": "0",
+      "willPayload": ""
+  },
+  {
+      "id": "0c43b52f6166d254",
+      "type": "influxdb",
+      "hostname": "127.0.0.1",
+      "port": "8086",
+      "protocol": "http",
+      "database": "plug_data_extreme_version",
+      "name": "plug_data test 2",
+      "usetls": false,
+      "tls": "",
+      "influxdbVersion": "1.x",
+      "url": "http://localhost:8086",
+      "rejectUnauthorized": true
+  },
+  {
+      "id": "2ad5f36107cb75c1",
+      "type": "influxdb",
+      "hostname": "127.0.0.1",
+      "port": "8086",
+      "protocol": "http",
+      "database": "plug_database",
+      "name": "plug_database",
+      "usetls": false,
+      "tls": "",
+      "influxdbVersion": "1.x",
+      "url": "http://localhost:8086",
+      "rejectUnauthorized": true
+  },
+  {
+      "id": "9461aa5f2c9a9e98",
+      "type": "mqtt-broker",
+      "name": "devbit",
+      "broker": "mqtt.devbit.be",
+      "port": "1883",
+      "clientid": "",
+      "autoConnect": true,
+      "usetls": false,
+      "protocolVersion": "4",
+      "keepalive": "60",
+      "cleansession": true,
+      "birthTopic": "",
+      "birthQos": "0",
+      "birthPayload": "",
+      "birthMsg": {},
+      "closeTopic": "",
+      "closeQos": "0",
+      "closePayload": "",
+      "closeMsg": {},
+      "willTopic": "",
+      "willQos": "0",
+      "willPayload": "",
+      "willMsg": {},
+      "userProps": "",
+      "sessionExpiry": ""
+  },
+  {
+      "id": "8df0711d94425f0d",
+      "type": "ha-entity-config",
+      "server": "d4da0bbd.bfcad8",
+      "deviceConfig": "",
+      "name": "box_history",
+      "version": "6",
+      "entityType": "sensor",
+      "haConfig": [
+          {
+              "property": "name",
+              "value": "box_history"
+          },
+          {
+              "property": "icon",
+              "value": ""
+          },
+          {
+              "property": "entity_category",
+              "value": ""
+          },
+          {
+              "property": "device_class",
+              "value": ""
+          },
+          {
+              "property": "unit_of_measurement",
+              "value": ""
+          },
+          {
+              "property": "state_class",
+              "value": "measurement"
+          }
+      ],
+      "resend": false,
+      "debugEnabled": false
+  },
+  {
+      "id": "500b55736393d6d5",
+      "type": "mqtt-broker",
+      "name": "localNetwork",
+      "broker": "192.168.12.1",
+      "port": "1883",
+      "clientid": "",
+      "autoConnect": true,
+      "usetls": false,
+      "protocolVersion": "4",
+      "keepalive": "60",
+      "cleansession": true,
+      "birthTopic": "",
+      "birthQos": "0",
+      "birthPayload": "",
+      "birthMsg": {},
+      "closeTopic": "",
+      "closeQos": "0",
+      "closePayload": "",
+      "closeMsg": {},
+      "willTopic": "",
+      "willQos": "0",
+      "willPayload": "",
+      "willMsg": {},
+      "userProps": "",
+      "sessionExpiry": ""
+  },
+  {
+      "id": "0df7c28bed83b6a7",
+      "type": "mqtt in",
+      "z": "bf7d14be5cda67b6",
+      "name": "opstelling 1",
+      "topic": "ai-stopcontact/tele/opstelling_plug1/SENSOR/usagePrediction",
+      "qos": "2",
+      "datatype": "auto-detect",
+      "broker": "500b55736393d6d5",
+      "nl": false,
+      "rap": true,
+      "rh": 0,
+      "inputs": 0,
+      "x": 110,
+      "y": 600,
+      "wires": [
+          [
+              "ac2e0701192b2f33",
+              "73e850a2cd5529de"
+          ]
+      ]
+  },
+  {
+      "id": "ac2e0701192b2f33",
+      "type": "debug",
+      "z": "bf7d14be5cda67b6",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 210,
+      "y": 660,
+      "wires": []
+  },
+  {
+      "id": "73e850a2cd5529de",
+      "type": "function",
+      "z": "bf7d14be5cda67b6",
+      "name": "on or off",
+      "func": "var phoneState = global.get(\"homeassistant.homeAssistant.states['device_tracker.phone_jarno'].state\");\nvar manual = global.get(\"homeassistant.homeAssistant.states['input_boolean.manual_control'].state\");\n\n// if you want to use presence detection to turn off the plug when you are not home\n// if(phoneState == \"not_home\") {\n//     msg.payload = {\n//         \"service\": \"turn_off\"\n//     }\n// }\nif(manual == \"on\") {\n    return;\n}\nif(msg.payload == \"on\") {\n    msg.payload = {\n        \"service\": \"turn_on\"\n    }\n}\nelse if(msg.payload == \"off\") {\n    msg.payload = {\n        \"service\": \"turn_off\"\n    }\n}\nreturn msg;",
+      "outputs": 1,
+      "noerr": 0,
+      "initialize": "",
+      "finalize": "",
+      "libs": [],
+      "x": 640,
+      "y": 600,
+      "wires": [
+          [
+              "c64af10eb70e905f",
+              "b9383d2f71baa142"
+          ]
+      ]
+  },
+  {
+      "id": "c64af10eb70e905f",
+      "type": "api-call-service",
+      "z": "bf7d14be5cda67b6",
+      "name": "box control",
+      "server": "d4da0bbd.bfcad8",
+      "version": 5,
+      "debugenabled": false,
+      "domain": "switch",
+      "service": "",
+      "areaId": [],
+      "deviceId": [
+          "109404eded5667ccf1dbc03e6951121e"
+      ],
+      "entityId": [],
+      "data": "",
+      "dataType": "jsonata",
+      "mergeContext": "",
+      "mustacheAltTags": false,
+      "outputProperties": [],
+      "queue": "none",
+      "x": 850,
+      "y": 600,
+      "wires": [
+          []
+      ]
+  },
+  {
+      "id": "b9383d2f71baa142",
+      "type": "debug",
+      "z": "bf7d14be5cda67b6",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 770,
+      "y": 660,
+      "wires": []
+  },
+  {
+      "id": "171da96e368960f5",
+      "type": "mqtt in",
+      "z": "bf7d14be5cda67b6",
+      "name": "opstelling 2",
+      "topic": "ai-stopcontact/tele/opstelling_plug2/SENSOR/usagePrediction",
+      "qos": "2",
+      "datatype": "auto-detect",
+      "broker": "500b55736393d6d5",
+      "nl": false,
+      "rap": true,
+      "rh": 0,
+      "inputs": 0,
+      "x": 130,
+      "y": 460,
+      "wires": [
+          [
+              "095a51e01f2a51e6",
+              "1b45a5c777e61009"
+          ]
+      ]
+  },
+  {
+      "id": "095a51e01f2a51e6",
+      "type": "debug",
+      "z": "bf7d14be5cda67b6",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 230,
+      "y": 520,
+      "wires": []
+  },
+  {
+      "id": "1b45a5c777e61009",
+      "type": "function",
+      "z": "bf7d14be5cda67b6",
+      "name": "on or off",
+      "func": "var phoneState = global.get(\"homeassistant.homeAssistant.states['device_tracker.phone_jarno'].state\");\nvar manual = global.get(\"homeassistant.homeAssistant.states['input_boolean.manual_control'].state\");\n\n// if you want to use presence detection to turn off the plug when you are not home\n// if(phoneState == \"not_home\") {\n//     msg.payload = {\n//         \"service\": \"turn_off\"\n//     }\n//     return msg;\n// }\nif(manual == \"on\") {\n    return;\n}\nif(msg.payload == \"on\") {\n    msg.payload = {\n        \"service\": \"turn_on\"\n    }\n}\nelse if(msg.payload == \"off\") {\n    msg.payload = {\n        \"service\": \"turn_off\"\n    }\n}\nreturn msg;",
+      "outputs": 1,
+      "noerr": 0,
+      "initialize": "",
+      "finalize": "",
+      "libs": [],
+      "x": 660,
+      "y": 460,
+      "wires": [
+          [
+              "a5a15e9621bca07b",
+              "e901313a4a78fadc"
+          ]
+      ]
+  },
+  {
+      "id": "a5a15e9621bca07b",
+      "type": "api-call-service",
+      "z": "bf7d14be5cda67b6",
+      "name": "laptop control",
+      "server": "d4da0bbd.bfcad8",
+      "version": 5,
+      "debugenabled": false,
+      "domain": "switch",
+      "service": "",
+      "areaId": [],
+      "deviceId": [
+          "927595446226fd854e4d80797fe5bc6c"
+      ],
+      "entityId": [],
+      "data": "",
+      "dataType": "jsonata",
+      "mergeContext": "",
+      "mustacheAltTags": false,
+      "outputProperties": [],
+      "queue": "none",
+      "x": 880,
+      "y": 460,
+      "wires": [
+          [
+              "55c6dd32d482145c"
+          ]
+      ]
+  },
+  {
+      "id": "e901313a4a78fadc",
+      "type": "debug",
+      "z": "bf7d14be5cda67b6",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 520,
+      "wires": []
+  },
+  {
+      "id": "55c6dd32d482145c",
+      "type": "debug",
+      "z": "bf7d14be5cda67b6",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 1050,
+      "y": 520,
+      "wires": []
+  },
+  {
+      "id": "16f1b123.b6bbdf",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/pc_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 390,
+      "y": 160,
+      "wires": [
+          [
+              "0856b0b76f2496cf",
+              "907d212b30393f8b"
+          ]
+      ]
+  },
+  {
+      "id": "b6d7281e.aa3328",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 220,
+      "wires": []
+  },
+  {
+      "id": "e4786363.dc40d",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB school pc",
+      "measurement": "school_pc",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 840,
+      "y": 160,
+      "wires": []
+  },
+  {
+      "id": "0856b0b76f2496cf",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 240,
+      "wires": []
+  },
+  {
+      "id": "907d212b30393f8b",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 160,
+      "wires": [
+          [
+              "e4786363.dc40d",
+              "b6d7281e.aa3328"
+          ]
+      ]
+  },
+  {
+      "id": "529c986dfc8066e8",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/box_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 390,
+      "y": 300,
+      "wires": [
+          [
+              "495c1de8769718b3",
+              "82a24d6da6755786"
+          ]
+      ]
+  },
+  {
+      "id": "404e619e61d61290",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 360,
+      "wires": []
+  },
+  {
+      "id": "69d8d4e3d296e842",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB school box",
+      "measurement": "school_box",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 840,
+      "y": 300,
+      "wires": []
+  },
+  {
+      "id": "495c1de8769718b3",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 380,
+      "wires": []
+  },
+  {
+      "id": "82a24d6da6755786",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 300,
+      "wires": [
+          [
+              "69d8d4e3d296e842",
+              "404e619e61d61290"
+          ]
+      ]
+  },
+  {
+      "id": "a6f4dfedea5eed66",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/printer_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 390,
+      "y": 440,
+      "wires": [
+          [
+              "0a4eb156eef76a60",
+              "1883f3de5b864123"
+          ]
+      ]
+  },
+  {
+      "id": "a4b0aa8b123759e6",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 500,
+      "wires": []
+  },
+  {
+      "id": "fc115cf8e608d33c",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB printer",
+      "measurement": "school_printer",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 830,
+      "y": 440,
+      "wires": []
+  },
+  {
+      "id": "0a4eb156eef76a60",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 520,
+      "wires": []
+  },
+  {
+      "id": "1883f3de5b864123",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 440,
+      "wires": [
+          [
+              "fc115cf8e608d33c",
+              "a4b0aa8b123759e6"
+          ]
+      ]
+  },
+  {
+      "id": "e9970514987ef14b",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/laptop_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 390,
+      "y": 580,
+      "wires": [
+          [
+              "c30ffa5668cd65cf",
+              "6804b19db1098317"
+          ]
+      ]
+  },
+  {
+      "id": "4c09bb8048e93644",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 640,
+      "wires": []
+  },
+  {
+      "id": "71876b9fe981c216",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB laptop",
+      "measurement": "laptop_lukas",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 830,
+      "y": 580,
+      "wires": []
+  },
+  {
+      "id": "c30ffa5668cd65cf",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 660,
+      "wires": []
+  },
+  {
+      "id": "6804b19db1098317",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 580,
+      "wires": [
+          [
+              "71876b9fe981c216",
+              "4c09bb8048e93644"
+          ]
+      ]
+  },
+  {
+      "id": "66e054e8390282a7",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/phone_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 390,
+      "y": 720,
+      "wires": [
+          [
+              "88bd83849cfd466c",
+              "f19a8dc02b6a1cd5"
+          ]
+      ]
+  },
+  {
+      "id": "e3be9708ced924c1",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 780,
+      "wires": []
+  },
+  {
+      "id": "b4211febb2ac4eea",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB phone",
+      "measurement": "phone_charging",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 830,
+      "y": 720,
+      "wires": []
+  },
+  {
+      "id": "88bd83849cfd466c",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 800,
+      "wires": []
+  },
+  {
+      "id": "f19a8dc02b6a1cd5",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 720,
+      "wires": [
+          [
+              "b4211febb2ac4eea",
+              "e3be9708ced924c1"
+          ]
+      ]
+  },
+  {
+      "id": "af44014670f56c9a",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/monitor_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 390,
+      "y": 860,
+      "wires": [
+          [
+              "468e758a98d67c9f",
+              "3cc930e3e35ab3cd"
+          ]
+      ]
+  },
+  {
+      "id": "e954b0f84a5aea35",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 920,
+      "wires": []
+  },
+  {
+      "id": "269fd6bd603c4fea",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB monitor",
+      "measurement": "pc_monitor",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 830,
+      "y": 860,
+      "wires": []
+  },
+  {
+      "id": "468e758a98d67c9f",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 940,
+      "wires": []
+  },
+  {
+      "id": "3cc930e3e35ab3cd",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 860,
+      "wires": [
+          [
+              "269fd6bd603c4fea",
+              "e954b0f84a5aea35"
+          ]
+      ]
+  },
+  {
+      "id": "6b87eee6e8296680",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "opstelling 1",
+      "topic": "ai-stopcontact/tele/opstelling_plug1/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "500b55736393d6d5",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 370,
+      "y": 1020,
+      "wires": [
+          [
+              "7d58a2d339813c99",
+              "e692ec04839bc0c1"
+          ]
+      ]
+  },
+  {
+      "id": "41277532b1a7e81d",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 1080,
+      "wires": []
+  },
+  {
+      "id": "34d9f6f088e7a757",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB opstelling1",
+      "measurement": "opstelling1",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 840,
+      "y": 1020,
+      "wires": []
+  },
+  {
+      "id": "7d58a2d339813c99",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 1100,
+      "wires": []
+  },
+  {
+      "id": "e692ec04839bc0c1",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 1020,
+      "wires": [
+          [
+              "34d9f6f088e7a757",
+              "41277532b1a7e81d"
+          ]
+      ]
+  },
+  {
+      "id": "64f34a9bddf9789c",
+      "type": "mqtt in",
+      "z": "3754a753.818db8",
+      "name": "opstelling 2",
+      "topic": "ai-stopcontact/tele/opstelling_plug2/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "500b55736393d6d5",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 370,
+      "y": 1180,
+      "wires": [
+          [
+              "f86f54ce8cba28bd",
+              "70bb28ca1bbbeb27"
+          ]
+      ]
+  },
+  {
+      "id": "c524c724df9115ca",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 790,
+      "y": 1240,
+      "wires": []
+  },
+  {
+      "id": "9108978bebe794e6",
+      "type": "influxdb out",
+      "z": "3754a753.818db8",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB opstelling2",
+      "measurement": "opstelling2",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 840,
+      "y": 1180,
+      "wires": []
+  },
+  {
+      "id": "f86f54ce8cba28bd",
+      "type": "debug",
+      "z": "3754a753.818db8",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 430,
+      "y": 1260,
+      "wires": []
+  },
+  {
+      "id": "70bb28ca1bbbeb27",
+      "type": "change",
+      "z": "3754a753.818db8",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 600,
+      "y": 1180,
+      "wires": [
+          [
+              "9108978bebe794e6",
+              "c524c724df9115ca"
+          ]
+      ]
+  },
+  {
+      "id": "021ed195d0951047",
+      "type": "mqtt in",
+      "z": "5b6aaa0b50acdda9",
+      "name": "MQTT Payload topic",
+      "topic": "tele/pc_startup/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "3a09552c.f19afa",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 230,
+      "y": 340,
+      "wires": [
+          [
+              "0f725a37d9b9a5d8",
+              "6d5eea13d323f7b3"
+          ]
+      ]
+  },
+  {
+      "id": "6bbbf0526cdf0e04",
+      "type": "debug",
+      "z": "5b6aaa0b50acdda9",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 630,
+      "y": 400,
+      "wires": []
+  },
+  {
+      "id": "f6c6ff31e0288da5",
+      "type": "influxdb out",
+      "z": "5b6aaa0b50acdda9",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB pc startup",
+      "measurement": "pc_startup",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 680,
+      "y": 340,
+      "wires": []
+  },
+  {
+      "id": "0f725a37d9b9a5d8",
+      "type": "debug",
+      "z": "5b6aaa0b50acdda9",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 270,
+      "y": 420,
+      "wires": []
+  },
+  {
+      "id": "6d5eea13d323f7b3",
+      "type": "change",
+      "z": "5b6aaa0b50acdda9",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 440,
+      "y": 340,
+      "wires": [
+          [
+              "f6c6ff31e0288da5",
+              "6bbbf0526cdf0e04"
+          ]
+      ]
+  },
+  {
+      "id": "778727cdb2045cb9",
+      "type": "mqtt in",
+      "z": "5b6aaa0b50acdda9",
+      "d": true,
+      "name": "MQTT Payload topic",
+      "topic": "tele/printer_startup/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "3a09552c.f19afa",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 230,
+      "y": 500,
+      "wires": [
+          [
+              "364fbc2c506411ea",
+              "97d38031227cf318"
+          ]
+      ]
+  },
+  {
+      "id": "f1a5338e9847090b",
+      "type": "debug",
+      "z": "5b6aaa0b50acdda9",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 630,
+      "y": 560,
+      "wires": []
+  },
+  {
+      "id": "9976fe7637270dde",
+      "type": "influxdb out",
+      "z": "5b6aaa0b50acdda9",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB printer startup",
+      "measurement": "printer_startup",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 690,
+      "y": 500,
+      "wires": []
+  },
+  {
+      "id": "364fbc2c506411ea",
+      "type": "debug",
+      "z": "5b6aaa0b50acdda9",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 270,
+      "y": 580,
+      "wires": []
+  },
+  {
+      "id": "97d38031227cf318",
+      "type": "change",
+      "z": "5b6aaa0b50acdda9",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 440,
+      "y": 500,
+      "wires": [
+          [
+              "9976fe7637270dde",
+              "f1a5338e9847090b"
+          ]
+      ]
+  },
+  {
+      "id": "c9e9bda75edcbd44",
+      "type": "mqtt in",
+      "z": "62d6077271c66fe0",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/pc_jarno_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 290,
+      "y": 100,
+      "wires": [
+          [
+              "745c5e8dd2bbde2e",
+              "74525bdfd4a69570"
+          ]
+      ]
+  },
+  {
+      "id": "c2ae32c556cf924f",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 690,
+      "y": 160,
+      "wires": []
+  },
+  {
+      "id": "84eccbf4a3436e21",
+      "type": "influxdb out",
+      "z": "62d6077271c66fe0",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB pc jarno",
+      "measurement": "pc_jarno",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 730,
+      "y": 100,
+      "wires": []
+  },
+  {
+      "id": "745c5e8dd2bbde2e",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 330,
+      "y": 180,
+      "wires": []
+  },
+  {
+      "id": "74525bdfd4a69570",
+      "type": "change",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 500,
+      "y": 100,
+      "wires": [
+          [
+              "84eccbf4a3436e21",
+              "c2ae32c556cf924f"
+          ]
+      ]
+  },
+  {
+      "id": "643e273396883a36",
+      "type": "mqtt in",
+      "z": "62d6077271c66fe0",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/pc_brother_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 290,
+      "y": 280,
+      "wires": [
+          [
+              "3eba9e23c3a2fe15",
+              "e9cb8970a08f0cdb"
+          ]
+      ]
+  },
+  {
+      "id": "4791db8a4da5f52d",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 690,
+      "y": 340,
+      "wires": []
+  },
+  {
+      "id": "f5eac5d9ae6803d8",
+      "type": "influxdb out",
+      "z": "62d6077271c66fe0",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB pc brother",
+      "measurement": "pc_brother",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 740,
+      "y": 280,
+      "wires": []
+  },
+  {
+      "id": "3eba9e23c3a2fe15",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 330,
+      "y": 360,
+      "wires": []
+  },
+  {
+      "id": "e9cb8970a08f0cdb",
+      "type": "change",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 500,
+      "y": 280,
+      "wires": [
+          [
+              "f5eac5d9ae6803d8",
+              "4791db8a4da5f52d"
+          ]
+      ]
+  },
+  {
+      "id": "7ff4e34c847b0408",
+      "type": "mqtt in",
+      "z": "62d6077271c66fe0",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/tv_jarno_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 290,
+      "y": 460,
+      "wires": [
+          [
+              "5c14782f742ef4c8",
+              "8ea51eb90b9044e3"
+          ]
+      ]
+  },
+  {
+      "id": "6152ddd422e0a183",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 690,
+      "y": 520,
+      "wires": []
+  },
+  {
+      "id": "29a677935e11d50f",
+      "type": "influxdb out",
+      "z": "62d6077271c66fe0",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB tv jarno",
+      "measurement": "tv_jarno",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 730,
+      "y": 460,
+      "wires": []
+  },
+  {
+      "id": "5c14782f742ef4c8",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 330,
+      "y": 540,
+      "wires": []
+  },
+  {
+      "id": "8ea51eb90b9044e3",
+      "type": "change",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 500,
+      "y": 460,
+      "wires": [
+          [
+              "29a677935e11d50f",
+              "6152ddd422e0a183"
+          ]
+      ]
+  },
+  {
+      "id": "f9dae7a05f95f83d",
+      "type": "mqtt in",
+      "z": "62d6077271c66fe0",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/nintendoswitch_jarno_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 290,
+      "y": 660,
+      "wires": [
+          [
+              "4d60a0a478f9ae6c",
+              "5d2540f4c33d0c8c"
+          ]
+      ]
+  },
+  {
+      "id": "2a3a74b88e65e4fc",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 690,
+      "y": 720,
+      "wires": []
+  },
+  {
+      "id": "de2bb027e7c52840",
+      "type": "influxdb out",
+      "z": "62d6077271c66fe0",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB nintendoswitch",
+      "measurement": "nintendoswitch_jarno",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 750,
+      "y": 660,
+      "wires": []
+  },
+  {
+      "id": "4d60a0a478f9ae6c",
+      "type": "debug",
+      "z": "62d6077271c66fe0",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 330,
+      "y": 740,
+      "wires": []
+  },
+  {
+      "id": "5d2540f4c33d0c8c",
+      "type": "change",
+      "z": "62d6077271c66fe0",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 500,
+      "y": 660,
+      "wires": [
+          [
+              "de2bb027e7c52840",
+              "2a3a74b88e65e4fc"
+          ]
+      ]
+  },
+  {
+      "id": "518d1d253113976e",
+      "type": "mqtt in",
+      "z": "340e8bad77b94818",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/lukaspc_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 130,
+      "y": 80,
+      "wires": [
+          [
+              "4607dc90f1c808ad",
+              "0d4e38460f21a27b"
+          ]
+      ]
+  },
+  {
+      "id": "6b22b5f59854b1da",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 530,
+      "y": 140,
+      "wires": []
+  },
+  {
+      "id": "e801cbd7a6b35788",
+      "type": "influxdb out",
+      "z": "340e8bad77b94818",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB pc lukas",
+      "measurement": "pc_lukas",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 570,
+      "y": 80,
+      "wires": []
+  },
+  {
+      "id": "4607dc90f1c808ad",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 170,
+      "y": 160,
+      "wires": []
+  },
+  {
+      "id": "0d4e38460f21a27b",
+      "type": "change",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 340,
+      "y": 80,
+      "wires": [
+          [
+              "e801cbd7a6b35788",
+              "6b22b5f59854b1da"
+          ]
+      ]
+  },
+  {
+      "id": "ca22bd1a6f566578",
+      "type": "mqtt in",
+      "z": "340e8bad77b94818",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/tv_lukas_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 130,
+      "y": 220,
+      "wires": [
+          [
+              "fe7d144b8e5f1282",
+              "f371dbcade0ca08e"
+          ]
+      ]
+  },
+  {
+      "id": "77e6460323ef890d",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 530,
+      "y": 280,
+      "wires": []
+  },
+  {
+      "id": "d4dda4be54952331",
+      "type": "influxdb out",
+      "z": "340e8bad77b94818",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB tv lukas",
+      "measurement": "tv_lukas",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 570,
+      "y": 220,
+      "wires": []
+  },
+  {
+      "id": "fe7d144b8e5f1282",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 170,
+      "y": 300,
+      "wires": []
+  },
+  {
+      "id": "f371dbcade0ca08e",
+      "type": "change",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 340,
+      "y": 220,
+      "wires": [
+          [
+              "d4dda4be54952331",
+              "77e6460323ef890d"
+          ]
+      ]
+  },
+  {
+      "id": "d28261335bb26e67",
+      "type": "mqtt in",
+      "z": "340e8bad77b94818",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/printer_lukas_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 130,
+      "y": 360,
+      "wires": [
+          [
+              "179ef23c70ff92fb",
+              "f48e36a07f6916d7"
+          ]
+      ]
+  },
+  {
+      "id": "02c3d62c36ea3fd1",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 530,
+      "y": 420,
+      "wires": []
+  },
+  {
+      "id": "9752931e8b166836",
+      "type": "influxdb out",
+      "z": "340e8bad77b94818",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB printer lukas",
+      "measurement": "printer_lukas",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 590,
+      "y": 360,
+      "wires": []
+  },
+  {
+      "id": "179ef23c70ff92fb",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 170,
+      "y": 440,
+      "wires": []
+  },
+  {
+      "id": "f48e36a07f6916d7",
+      "type": "change",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 340,
+      "y": 360,
+      "wires": [
+          [
+              "9752931e8b166836",
+              "02c3d62c36ea3fd1"
+          ]
+      ]
+  },
+  {
+      "id": "1764d8308e0f4c91",
+      "type": "mqtt in",
+      "z": "340e8bad77b94818",
+      "name": "MQTT Payload topic",
+      "topic": "ai-stopcontact/plugs/tele/scherm_lukas_plug/SENSOR",
+      "qos": "1",
+      "datatype": "auto-detect",
+      "broker": "9461aa5f2c9a9e98",
+      "nl": false,
+      "rap": false,
+      "inputs": 0,
+      "x": 130,
+      "y": 500,
+      "wires": [
+          [
+              "47726dcf98760b33",
+              "6661dc160bd80f4e"
+          ]
+      ]
+  },
+  {
+      "id": "fe22c30fd079d488",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 530,
+      "y": 560,
+      "wires": []
+  },
+  {
+      "id": "2eae8bbf2cdcc0b8",
+      "type": "influxdb out",
+      "z": "340e8bad77b94818",
+      "influxdb": "2ad5f36107cb75c1",
+      "name": "Write to InfluxDB scherm lukas",
+      "measurement": "scherm_lukas",
+      "precision": "",
+      "retentionPolicy": "",
+      "database": "database",
+      "precisionV18FluxV20": "ms",
+      "retentionPolicyV18Flux": "",
+      "org": "organisation",
+      "bucket": "bucket",
+      "x": 590,
+      "y": 500,
+      "wires": []
+  },
+  {
+      "id": "47726dcf98760b33",
+      "type": "debug",
+      "z": "340e8bad77b94818",
+      "d": true,
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 170,
+      "y": 580,
+      "wires": []
+  },
+  {
+      "id": "6661dc160bd80f4e",
+      "type": "change",
+      "z": "340e8bad77b94818",
+      "name": "",
+      "rules": [
+          {
+              "t": "set",
+              "p": "payload",
+              "pt": "msg",
+              "to": "payload.ENERGY",
+              "tot": "msg"
+          }
+      ],
+      "action": "",
+      "property": "",
+      "from": "",
+      "to": "",
+      "reg": false,
+      "x": 340,
+      "y": 500,
+      "wires": [
+          [
+              "2eae8bbf2cdcc0b8",
+              "fe22c30fd079d488"
+          ]
+      ]
+  }
+]
