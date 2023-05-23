@@ -29,7 +29,7 @@
 
 ## Node Red naar influxDB
 
-1. klik op menu -> import en importeer het flows.json bestand.
-2. pas in de mqtt payload node de topic aan. (bv. ai-stopcontact/plugs/lamp_plug/SENSOR)
-3. pas in de influxDB node aan naar welke measurement de data geschreven wordt (bv. lamp_home)
+1. Klik op menu -> import en importeer het flows.json bestand.
+2. Pas in de mqtt payload node de topic aan. (bv. ai-stopcontact/plugs/lamp_plug/SENSOR)
+3. Pas in de influxDB node aan naar welke measurement de data geschreven wordt (bv. lamp_home)
 4. Indien je een andere mqtt broker gebruikt moet je in de mqtt node het server veld aanpassen.
