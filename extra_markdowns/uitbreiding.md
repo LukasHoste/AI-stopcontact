@@ -1,0 +1,9 @@
+# Verdere uitbreidingsmogelijkheden
+
+## Aanwezigheidsdetectie
+
+Aanwezigheidsdetectie is een groep van technologieën die gebruikt worden voor het detecteren van een persoon/mens. Aan de hand van deze technologie kan het stopcontact op een intelligente manier aan en uitgezet worden zonder AI. Aanwezigheidsdetectie kan op een simpele manier uitgevoerd worden door te controleren of een apparaat met een bepaald IP-adres verbonden is met een netwerk. Om de prestaties van deze aanwezigheidsdetectie te verbeteren kan het verbeterd worden door gebruik te maken van locatie of door op de router zelf MAC-adressen te controleren. Aan de hand van deze aanwezigheidsdetectie kan een stopcontact makkelijk aangezet worden wanneer een persoon aanwezig is en uitgezet worden wanneer een persoon niet aanwezig is. Wanneer de persoon niet aanwezig is, zal het belangrijk zijn dat het automatisch aan- en uitzetten van het stopcontact tijdelijk uitgeschakeld wordt.
+
+## Vaste momenten
+
+Indien voldoende data opgemeten is van hoe een gebruiker een apparaat gebruikt, kan gebruik gemaakt worden van vaste momenten waarop het apparaat uitstaat. Dit betekent dat aan de hand van de data onderzocht wordt op welke momenten de plug altijd aan stond of bijna altijd aan stond. Zo kan het bijvoorbeeld zijn dat een televisie nooit vanaf 2 uur tot 10 uur gebruikt wordt, dit is dan een moment dat de televisie dus automatisch uitgezet kan worden. Bij het gebruiken van deze methode is het belangrijk dat er een methode is om het uitzetten te overschrijven indien de gebruiker het apparaat plots toch op dit moment wil gebruiken. Een simpele methode hiervoor zou zijn dat wanneer de plug aangaat op een moment dat het altijd aanstaat, dat automatisch het voorspellen aan de hand van gedrag terug ingeschakeld wordt. Indien er een methode is om het automatisch uitzetten te overschrijven kan ook gebruik gemaakt worden van momenten waarop het apparaat bijna nooit gebruikt wordt.
