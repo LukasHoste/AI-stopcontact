@@ -61,17 +61,25 @@ if(args.device == "laptop"):
     df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/pc_jarno_1w.csv', parse_dates=['timestamp'])
 elif(args.device == "box"):
     df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
+elif(args.device == "pc"):
+    print("loading pc history")
+    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PCSynth.csv', parse_dates=['timestamp'])
+elif(args.device == "printer"):
+    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PrinterSynth.csv', parse_dates=['timestamp'])
+elif(args.device == "phone"):
+    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PhoneSynth.csv', parse_dates=['timestamp'])
 else:
     print("incorrect device from argument")
     exit()
 
 # Load in the model
 # model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_10-05_short') # loads the model
+# model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional') #this is the old model that makes a prediction for box or laptop
+model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/all_devicesV4')
+classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_15-05_simple') # loads the model
 
 # Load in the scaler (this was saved from the notebook where the model was trained)
-scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_new.gz')
+scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_all.gz')
 
 classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/scaler/scaler_classificationshort.gz') # load the scaler, fitted during training
 
@@ -79,7 +87,7 @@ device = 0
 # last_change = 0
 
 # CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer','switch','tv'] # list of all the classes, this has to be in the same order as during training
-CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer']
+CLASSES=['box', 'laptop', 'pc', 'phone', 'printer']
 
 
 prediction_arrays = {} # dictionary for all the arrays that contain the data to make a prediction
@@ -143,17 +151,18 @@ def on_message(client, userdata, message):
 
     
     if((prediction_arrays[str(message.topic)].size/4) <= 9):
-        print("executing block one of classification")
-        print(prediction_arrays[str(message.topic)].size)
-        prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
-        json_object["ENERGY"]["Current"],
-        # json_object["ENERGY"]["Factor"],
-        json_object["ENERGY"]["Power"],
-        json_object["ENERGY"]["ReactivePower"]
-        ])
-        print(prediction_arrays[str(message.topic)]) # print the current prediction array
-        normal_usage = np.append(normal_usage, [json_object["ENERGY"]["Power"]]) # Append the normal usage values to a numpy array
-    # append new values and make a prediction
+    	if(json_object["ENERGY"]["Power"] != 0):
+            print("executing block one of classification")
+            print(prediction_arrays[str(message.topic)].size)
+            prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
+            json_object["ENERGY"]["Current"],
+            # json_object["ENERGY"]["Factor"],
+            json_object["ENERGY"]["Power"],
+            json_object["ENERGY"]["ReactivePower"]
+            ])
+            print(prediction_arrays[str(message.topic)]) # print the current prediction array
+            normal_usage = np.append(normal_usage, [json_object["ENERGY"]["Power"]]) # Append the normal usage values to a numpy array
+            # append new values and make a prediction
     elif(not (prediction_state[str(message.topic)])):
         print("executing block two of classification (making the prediction)")
         prediction_arrays[str(message.topic)] = prediction_arrays[str(message.topic)].reshape((1,40))
@@ -163,25 +172,26 @@ def on_message(client, userdata, message):
         pred_test = classification_model.predict(transformed_array)
         print(pred_test)
         # get the index of the highest prediction
-        class_index = np.argmax(pred_test)
-        print(class_index)
+        device = np.argmax(pred_test)
+        print(device)
         # get the class name
-        print("predicted device: ",CLASSES[class_index])
+        print("predicted device: ",CLASSES[device])
         # for the demo there are only two devices thus we dont use the index to determine the device
         
-        if(CLASSES[class_index] == "box" and args.device == "box"):
-            device = 1
-        elif(CLASSES[class_index] == "laptop" and args.device == "laptop"):
-            device = 0
-        else:
-            print("incorrect device predicted stopping execution")
+        # if(CLASSES[class_index] == "box" and args.device == "box"):
+        #     device = 1
+        # elif(CLASSES[class_index] == "laptop" and args.device == "laptop"):
+        #     device = 0
+        # else:
+        #     print("incorrect device predicted stopping execution")
+        if(str(CLASSES[device]) != str(args.device)):
+            print("!!! an incorrect device has been predicted !!!")
+            print(CLASSES[device], "VS", args.device)
 	   # client.disconnect()
 	    #exit()
         print(device)
-            
-        print(pred_test)
         # send the result of the prediction back to the topic
-        client.publish(message.topic + "/prediction",CLASSES[class_index]) 
+        client.publish(message.topic + "/prediction",CLASSES[device]) 
         # if(once == True):
         prediction_state[str(message.topic)] = True
 
@@ -196,8 +206,8 @@ def on_message(client, userdata, message):
         if (status_counter == 0):
             states = mqtt_prediction.state_determination(normal_usage)
             print("This is the normal usage power: ", states)
-            if(args.device == "box"):
-                print("turning of box cause off in history")
+            if(CLASSES[device] == "box" or CLASSES[device] == "phone"):
+                print("turning of box/phone cause off in history")
                 client.publish(message.topic + "/usagePrediction", "off")
             # print("The last message added to the history: ", json_object)
             global history_dataset
@@ -236,11 +246,11 @@ def on_message(client, userdata, message):
             # print("The new last message added to the history: ", json_object)
             print("This is the oldest mqtt message: ", latest_value) 
             if ((latest_value.size)/5 < 1): 
-                latest_value = np.append(latest_value, [extracted_value, hour, minute, day_of_week, 1]) # Add the latest values from MQTT to a numpy array
+                latest_value = np.append(latest_value, [extracted_value, hour, minute, day_of_week, device]) # Add the latest values from MQTT to a numpy array
                 latest_value = mqtt_prediction.scale_mqtt_message(latest_value, scaler)
             else:
                 latest_value = np.delete(latest_value, [0,1,2,3,4]) # Delete the latest values first to get an empty numpy array
-                latest_value = np.append(latest_value, [extracted_value, hour, minute, day_of_week, 1]) # Add the latest values from MQTT to a numpy array
+                latest_value = np.append(latest_value, [extracted_value, hour, minute, day_of_week, device]) # Add the latest values from MQTT to a numpy array
                 latest_value = mqtt_prediction.scale_mqtt_message(latest_value, scaler)
             print("This is the latest mqtt message: ", latest_value)
             scaled_history_array = np.vstack((scaled_history_array, latest_value)) # Add the latest value from MQTT to the history array
@@ -251,11 +261,12 @@ def on_message(client, userdata, message):
             print("The prediction of the next state: ", pred)
 
             # Some code to change the plug state
-            if(pred > 0.7):
+            if(pred > 0.5):
                 client.publish(message.topic + "/usagePrediction", "on")
-            elif(pred < 0.6 and json_object["ENERGY"]["Power"] < states): 
+            elif(pred < 0.5 and json_object["ENERGY"]["Power"] < states): 
                 client.publish(message.topic + "/usagePrediction", "off")
-            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]) + " ,hour = " + str(hour) + " ,minute = " + str(minute) + " ,day of the week = " + days_of_week[day_of_week] + ", month = " + months_of_year[month])
+            #print(history_dataset['state'].iloc[0])
+            client.publish(message.topic + "/latest", "latest prediction = " + str(pred[0][0]) + " | value one week ago/expected = " + str(history_dataset['state'].iloc[0])) #+ " ,hour = " + str(hour) + " ,minute = " + str(minute) + " ,day of the week = " + days_of_week[day_of_week] + ", month = " + months_of_year[month])
             message_counter = 0
 
         status_counter = status_counter + 1 # This is to go to the next if statement
@@ -279,20 +290,24 @@ client.on_message= on_message                      #attach function to callback
 
 client.connect(broker_address, port=port)          #connect to broker
 
-user_input = input("Press enter to calculate the state for nomal usage")
+#user_input = input("Press enter to calculate the state for nomal usage")
+user_input = input("Please enter what plug you would like to use (1 or 2)")
+
+while(user_input != "1" and user_input != "2"):
+    print("please enter a valid plug your last input was: ", user_input)
+    user_input = input("Please enter what plug you would like to use (1 or 2)")
 
 client.loop_start() #start the loop
 
-if (user_input == ""): # When the user presses enter, it will subscribe to the topic
-    if(args.device == "box"):
-        client.subscribe("ai-stopcontact/plugs/tele/opstelling_plug1/SENSOR")
-        print("subscribed to box")
-        client.publish("ai-stopcontact/plugs/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
-    elif(args.device == "laptop"):
-        client.subscribe("ai-stopcontact/tele/laptop_plug/SENSOR")
-        print("subscribed to laptop")
-        client.publish("ai-stopcontact/tele/laptop_plug/SENSOR/usagePrediction", "on")
-
+if (True): # When the user presses enter, it will subscribe to the topic
+    if(user_input == "1"): # all devices that should be off by default
+        client.subscribe("ai-stopcontact/tele/opstelling_plug1/SENSOR")
+        print("subscribed to plug 1")
+        client.publish("ai-stopcontact/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
+    elif(user_input == "2"):
+        client.subscribe("ai-stopcontact/tele/opstelling_plug2/SENSOR")
+        print("subscribed to plug 2")
+        client.publish("ai-stopcontact/tele/opstelling_plug2/SENSOR/usagePrediction", "on")
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
