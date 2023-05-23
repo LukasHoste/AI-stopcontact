@@ -33,7 +33,8 @@ Vervolgens moet de volgende lijn toegevoegd worden aan aan deze file.
 
 ```txt
 Option "TransformationMatrix" "0 -1 1 1 0 0 0 0 1"
-``` 
+```
+
 Ten laatste moet er nog voor gezorgd worden dat ubuntu **xorg** gebruikt en **NIET** wayland. Hiervoor moet automatisch inloggen eerst uitgeschakeld worden. Op ubuntu is dit te vinden onder **instellingen -> users**. Log vervolgens uit en **klik bij het inloggen op het tandwiel en selecteer xorg**.
 
 ### Touchscreen met twee schermen
@@ -45,6 +46,8 @@ xinput map-to-output "id" "output"
 ```
 
 Het correcte id kan gevonden worden aan de hand van het **xinput**-commando en de output parameter is bijvoorbeeld HDMI-1.
+
+**LET OP: ALS JE DE KABEL VERWISSELD VAN POORT, ZAL DE ID OOK VERANDEREN**
 
 ## Dashboard
 
