@@ -129,7 +129,7 @@ Daarnaast moet het voldoen aan de structuur zoals in onze data. Indien je over m
 
 ### 2.1.2 Trainen van gebruikersgedrag model
 
-Voor het voorspellen van een gebruikersgedrag wordt het prediction_state2devices.ipynb notebook gebruikt. Om dit model te runnen, moeten de onderstaande modules geïnstalleerd zijn.
+Voor het voorspellen van een gebruikersgedrag wordt het prediction_state2devices.ipynb notebook gebruikt of het prediction_stateAlldevices notebook gebruikt. Om dit model te runnen, moeten de onderstaande modules geïnstalleerd zijn.
 
 ```txt
 conda install -n envname ipykernel --update-deps --force-reinstall (dit uitvoeren als ipykernel install niet lukt als je werkt in een conda environment)
@@ -140,11 +140,11 @@ pip3 install tensorflow
 pip3 install seaborn
 ```
 
-Om eigen data te gebruiken moeten de onderstaande lijnen code aangepast worden, waarbij de **own_file** zal moeten vervangen worden naar de naam van de eigen dataset.
+Om eigen data te gebruiken moeten de onderstaande lijnen code aangepast worden, waarbij de **own_file** zal moeten vervangen worden naar de naam van de eigen dataset. Bij de notebook prediction_stateAlldevices.ipynb zal je moeten meerdere load_data aanpassen, omdat er hierin meerdere devices worden meegegeven.
 
 ```python
-df_pc = load_data(r'../data/multiple_devices/new_weeks/[own_file].csv')
-df_box = load_data(r'../data/multiple_devices/new_weeks/[own_file].csv')
+df_pc = load_data(r'../csv_files/prediction_data/[own_file].csv')
+df_box = load_data(r'../csv_files/prediction_data/[own_file].csv')
 ```
 
 Indien de historiek kleiner is dan een week of verspringt met een grotere of kleinere time step moet de waarde van de ‘time_steps’ variabele aangepast worden. Om het model optimaal te laten werken kunnen de lagen, het maken van de slope, de learning rate en de batch size aangepast worden.
@@ -154,11 +154,10 @@ Indien de historiek kleiner is dan een week of verspringt met een grotere of kle
 Voor het uitvoeren van de scripts moeten ten eerste de onderstaande modules geïnstalleerd worden. Deze modules kunnen geïnstalleerd worden aan de hand van pip of pip3.
 
 ```txt
-pip3 install numpy
-pip3 install joblib
+pip3 install scikit-learn
+pip3 install matplotlib
 pip3 install pandas
 pip3 install tensorflow
-pip3 install scikit-learn
 pip3 install paho-mqtt
 pip3 install influxdb
 pip3 install python-dotenv
