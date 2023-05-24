@@ -129,15 +129,15 @@ Daarnaast moet het voldoen aan de structuur zoals in onze data. Indien je over m
 
 ### 2.1.2 Trainen van gebruikersgedrag model
 
-Voor het voorspellen van een gebruikersgedrag wordt het … notebook gebruikt. Om dit model te runnen, moeten de onderstaande modules geïnstalleerd zijn.
+Voor het voorspellen van een gebruikersgedrag wordt het prediction_state2devices.ipynb notebook gebruikt. Om dit model te runnen, moeten de onderstaande modules geïnstalleerd zijn.
 
 ```txt
-python -m pip install -U matplotlib
-pip3 install numpy
-pip3 install joblib
+conda install -n envname ipykernel --update-deps --force-reinstall (dit uitvoeren als ipykernel install niet lukt als je werkt in een conda environment)
+pip3 install scikit-learn
+pip3 install matplotlib
 pip3 install pandas
 pip3 install tensorflow
-pip3 install -U scikit-learn
+pip3 install seaborn
 ```
 
 Om eigen data te gebruiken moeten de onderstaande lijnen code aangepast worden, waarbij de **own_file** zal moeten vervangen worden naar de naam van de eigen dataset.
