@@ -40,11 +40,11 @@ git clone [gekopieerde string]
 
 ## 1.2 Python installatie
 
-Eerst zal voor de code uit te voeren python moeten geïnstalleerd zijn.
+Eerst zal Python moeten geïnstalleerd worden om de code uit te voeren.
 
-1. Python installeren voor Windows kan volgens [deze webpagina](https://www.python.org/downloads/).
+1. Python installeren voor Windows kan via de [volgende link](https://www.python.org/downloads/).
 
-2. Python installeren voor linux kan volgens [deze webpagina](https://docs.python-guide.org/starting/install3/linux/).
+2. Python installeren voor Linux kan via de [volgende link](https://docs.python-guide.org/starting/install3/linux/).
 
 ## 1.3 Pip installatie
 
@@ -58,17 +58,17 @@ Pip wordt gebruikt om de modules/packages te installeren.
 
 Miniconda is **NIET EEN MUST-HAVE**, maar dit kan wel een voordeel zijn als je verschillende versies van modules/packages wilt gaan gebruiken.
 
-Eerst zal Miniconda moeten geïnstalleerd worden en dit kan volgens de [volgende link](https://docs.conda.io/en/latest/miniconda.html#:~:text=On%20Windows%2C%20macOS%2C%20and%20Linux,which%20does%20require%20administrator%20permissions.). Om na te gaan of de installatie gelukt is, kan dit via de terminal.
+Eerst zal Miniconda moeten geïnstalleerd worden en dit kan volgens [deze link](https://docs.conda.io/en/latest/miniconda.html#:~:text=On%20Windows%2C%20macOS%2C%20and%20Linux,which%20does%20require%20administrator%20permissions.). Om na te gaan of de installatie gelukt is, kan dit via de terminal.
 
 ![miniconda](../img/miniconda.png)
 
-Daarna kan miniconda gebruikt worden. Eerst moet er gekeken worden om een conda enviroment aan te maken. Dit kan via de onderstaande commando. Hierbij moet nog de **env_name** vervangen worden door een eigen gekozen naam van environment. Ook moet de **version** aangepast worden naar de versie van python dat gebruikt wil worden.
+Daarna kan miniconda gebruikt worden. Eerst moet een conda environment aangemaakt worden. Dit kan via de onderstaande commando. Hierbij moet nog de **env_name** vervangen worden door een eigen gekozen naam van environment. Ook moet de **version** aangepast worden naar de versie van python die je wilt gebruiken.
 
 ```txt
 conda create --name env_name python=version
 ```
 
-Daarna is de conda environment aangemaakt en kan je via het volgend commando dit gaan activeren.
+Daarna is de conda environment aangemaakt en kan je via het volgend commando de environment gaan activeren.
 
 ```txt
 conda activate env_name
@@ -84,7 +84,7 @@ conda deactivate
 
 ## 1.5 Requirements.txt file installatie
 
-**DEZE FILE IS NIET EEN MUST-HAVE!** Wanneer je het model zou willen laten trainen, gaat het hoogst waarschijnlijk niet automatisch trainen op de GPU. Door deze txt-file te installeren, zou dit ervoor moeten zorgen dat het zal trainen op de GPU. Deze file bevat namelijk verschillende versies van packages en modules.
+**DEZE FILE IS NIET EEN MUST-HAVE!** Wanneer je het model zou willen trainen, gaat het hoogst waarschijnlijk niet automatisch trainen op de GPU. Door deze txt-file te installeren, zou dit ervoor moeten zorgen dat het zal trainen op de GPU. Deze file bevat namelijk verschillende versies van packages en modules.
 
 Om deze te installeren raden we aan om dit uit te voeren in een **apart conda environment**. Daarna moet u deze file lokaal hebben en het installeren kan volgens de onderstaande commando.
 
@@ -106,15 +106,15 @@ Onder notebooks kunnen de jupyter notebooks gevonden worden die gebruikt werden 
 
 ### 2.1.1 Trainen van het classificatie model
 
-Voor het herkennen van apparaten wordt het … notebook gebruikt. Om dit notebook uit te voeren moet ten eerste python geïnstalleerd zijn. Vervolgens moeten modules geïnstalleerd worden die te vinden zijn in de onderstaande tabel.
+Voor het herkennen van apparaten wordt het classification_device.ipynb notebook gebruikt. Om dit notebook uit te voeren moet ten eerste python geïnstalleerd zijn. Vervolgens moeten modules geïnstalleerd worden die te vinden zijn in de onderstaande tabel.
 
 ```txt
-python -m pip install -U matplotlib
-pip3 install numpy
-pip3 install joblib
+conda install -n envname ipykernel --update-deps --force-reinstall (dit uitvoeren als ipykernel install niet lukt als je werkt in een conda environment)
+pip3 install scikit-learn
+pip3 install matplotlib
 pip3 install pandas
 pip3 install tensorflow
-pip3 install -U scikit-learn
+pip3 install seaborn
 ```
 
 Om het model te trainen kan gebruik gemaakt worden van eigen data of van onze data. Om gebruik te maken van eigen data moet de bestandslocatie in de volgende twee lijnen code aangepast worden.
