@@ -3,6 +3,8 @@ import paho.mqtt.client as mqttClient #pip install paho-mqtt
 import time
 import numpy as np
 import os
+import sys
+import subprocess
 import pandas as pd
 import json
 from ast import literal_eval
@@ -27,21 +29,21 @@ broker = os.environ.get('MQTT_BROKER')
 influxip = os.environ.get('INFLUX_ADDRESS')
 mqtt_pw = os.environ.get('MQTT_PASS')
 
-def parseArguments():
-    # Create argument parser
-    parser = argparse.ArgumentParser()
-    # Optional arguments
-    parser.add_argument("-de", "--device", help="choose a device box or laptop", default='box')
-    parser.add_argument("-mc", "--mqttclient", help="choose an mqtt client name", default='client')
-    # add the --help option to the parser
-    #parser.add_argument('--help', action='help', help='Show this help message and exit')
-    # Print version
-    parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
-    # Parse arguments
-    args = parser.parse_args()
-    return args
+#def parseArguments():
+#    # Create argument parser
+#    parser = argparse.ArgumentParser()
+#    # Optional arguments
+#    parser.add_argument("-p", "--plug", help="choose a plug", default='1')
+#    parser.add_argument("-mc", "--mqttclient", help="choose an mqtt client name", default='client')
+#    # add the --help option to the parser
+#    #parser.add_argument('--help', action='help', help='Show this help message and exit')
+#    # Print version
+#    parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
+#    # Parse arguments
+#    args = parser.parse_args()
+#    return args
 
-args = parseArguments()
+#args = parseArguments()
 # print(args.history)
 
 # Global variables
@@ -49,28 +51,12 @@ normal_usage = np.zeros(shape=(1,0)) # Numpy array for all the normal usage valu
 states = 0 # Variable for the normal state
 status_counter = 0 # A variable to go to the next if-statement, for example the history
 message_counter = 0 # A variable
+time_counter = 0
 history_array = np.zeros(shape=(1,0)) # Numpy array for the history values
 latest_value = np.zeros(shape=(1,0)) # Numpy array for the new values that were sent
 
 days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 months_of_year = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
-# Load in the history
-# df_history = pd.read_csv(r'./data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
-if(args.device == "laptop"):
-    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/pc_jarno_1w.csv', parse_dates=['timestamp'])
-elif(args.device == "box"):
-    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
-elif(args.device == "pc"):
-    print("loading pc history")
-    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PCSynth.csv', parse_dates=['timestamp'])
-elif(args.device == "printer"):
-    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PrinterSynth.csv', parse_dates=['timestamp'])
-elif(args.device == "phone"):
-    df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PhoneSynth.csv', parse_dates=['timestamp'])
-else:
-    print("incorrect device from argument")
-    exit()
 
 # Load in the model
 # model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
@@ -93,7 +79,7 @@ CLASSES=['box', 'laptop', 'pc', 'phone', 'printer']
 prediction_arrays = {} # dictionary for all the arrays that contain the data to make a prediction
 prediction_state = {}
 
-def influx_history(client, dataframe):
+def influx_history(client, dataframe, device):
     history = np.array(dataframe) # Change the history dataset to a numpy array
     print(history, "history for influxdb")
     formatted_data = []
@@ -101,7 +87,7 @@ def influx_history(client, dataframe):
         timestamp = row[0]
         state = row[1]
         formatted_row = {
-            "measurement": "history" + args.device,
+            "measurement": "history" + device,
             "time": timestamp,
             "fields": {
                 "state": float(state)
@@ -111,6 +97,20 @@ def influx_history(client, dataframe):
 
     # print(formatted_data)
     client.write_points(formatted_data)
+
+def restart():
+    python = sys.executable
+    script = os.path.abspath(__file__)
+    arguments = sys.argv[1:]
+    subprocess.Popen([python,script] + arguments)
+    sys.exit()
+
+def all_zero(json):
+    keys = ['Current','Power','ReactivePower','ApparentPower']
+    for key in keys:
+        if (json['ENERGY'][key] != 0):
+            return False
+    return True
 
 # Method to connect to the broker
 def on_connect(client, userdata, flags, rc):
@@ -125,6 +125,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, message):
     # Create class object
     mqtt_prediction = MqttPrediction()
+        
 
     # Decode message
     bytes_array = message.payload.decode('utf8') # Get the message from the payload
@@ -132,6 +133,7 @@ def on_message(client, userdata, message):
     json_object = json.loads(bytes_array) # Convert the message to a json object
 
     # First part is to determine the on/off-state of the device
+    global df_history
     global normal_usage
     global states
     global status_counter
@@ -139,8 +141,13 @@ def on_message(client, userdata, message):
     global device
     global days_of_week
     global months_of_year
+    global time_counter
+    global first_value
+    
 
     # ------------- classification -------------
+
+
 
     # if the topic is not yet in the dictionary, add the topic name as a key to the dictionary and fill it with an empty array
     if(not str(message.topic) in prediction_arrays):
@@ -149,9 +156,21 @@ def on_message(client, userdata, message):
         print("adding key to check if a prediction has already been made")
         prediction_state[str(message.topic)] = False
 
+    if(time_counter < timer):
+        time_counter += 1
+        time_left = str(timer - time_counter + 1) + "0 seconds left"
+        print(time_left)
+        client.publish(message.topic + "/classification_state", "program currently resetting: " + time_left)
+        client.publish(message.topic + "/prediction","unknown")
+        client.publish(message.topic + "/prediction_state", "waiting on classification")
+        client.publish(message.topic + "/latest", "currently not predicting")
+
+
     
-    if((prediction_arrays[str(message.topic)].size/4) <= 9):
-    	if(json_object["ENERGY"]["Power"] != 0):
+    elif((prediction_arrays[str(message.topic)].size/4) <= 9):
+        client.publish(message.topic + "/classification_state", "retrieving/waiting for values")
+        client.publish(message.topic + "/prediction_state", "waiting on classification")
+        if(json_object["ENERGY"]["Power"] != 0):
             print("executing block one of classification")
             print(prediction_arrays[str(message.topic)].size)
             prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
@@ -184,35 +203,62 @@ def on_message(client, userdata, message):
         #     device = 0
         # else:
         #     print("incorrect device predicted stopping execution")
-        if(str(CLASSES[device]) != str(args.device)):
-            print("!!! an incorrect device has been predicted !!!")
-            print(CLASSES[device], "VS", args.device)
+
+        client.publish(message.topic + "/prediction",CLASSES[device])
+        client.publish(message.topic + "/classification_state", "done")
+        client.publish(message.topic + "/prediction_state", "retrieving history")
+
+        
+        if(CLASSES[device] == "laptop"):
+            df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/pc_jarno_1w.csv', parse_dates=['timestamp'])
+        elif(CLASSES[device] == "box"):
+            df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/synthetic_test_faked_new.csv', parse_dates=['timestamp'])
+        elif(CLASSES[device] == "pc"):
+            print("loading pc history")
+            df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PCSynth.csv', parse_dates=['timestamp'])
+        elif(CLASSES[device] == "printer"):
+            df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PrinterSynth.csv', parse_dates=['timestamp'])
+        elif(CLASSES[device] == "phone"):
+            df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PhoneSynth.csv', parse_dates=['timestamp'])
+
+        first_value = df_history['state'].iloc[0]
+        print(first_value)
+        
 	   # client.disconnect()
 	    #exit()
         print(device)
         # send the result of the prediction back to the topic
-        client.publish(message.topic + "/prediction",CLASSES[device]) 
+
         # if(once == True):
         prediction_state[str(message.topic)] = True
 
     # ------------ prediction ---------------
 
+    
+
     # Second part is to make the prediction 
     elif (normal_usage.size == 10):
+        client.publish(message.topic + "/prediction_state", "busy predicting state")
         extracted_value = mqtt_prediction.extract_object(json_object, states) # Extracting the values from the json object
         print("These are the extracted values: ", extracted_value)
 
+        # if we detect that no device is detected (no power) but the plug is still on
+        if(all_zero(json_object) and json_object['ENERGY']['Voltage'] != 0):
+            #restart the program
+            restart()
+
         # Create the history array and determine the state
-        if (status_counter == 0):
+        elif (status_counter == 0):
             states = mqtt_prediction.state_determination(normal_usage)
-            print("This is the normal usage power: ", states)
-            if(CLASSES[device] == "box" or CLASSES[device] == "phone"):
-                print("turning of box/phone cause off in history")
+            if(first_value == 0):
+                print("first value was zero so plug should turn off")
                 client.publish(message.topic + "/usagePrediction", "off")
+
+            
             # print("The last message added to the history: ", json_object)
             global history_dataset
             history_dataset = mqtt_prediction.history_creation(df_history) # Creating our own history (one week)
-            influx_history(flux_client, history_dataset)
+            influx_history(flux_client, history_dataset,CLASSES[device])
             # global history_array
             # history_array = np.array(history_dataset) # Change the history dataset to a numpy array
             # print(history_array)
@@ -278,36 +324,38 @@ flux_client = InfluxDBClient(host= influxip, port=8086, username=influx_user,pas
 print(flux_client.get_list_database())
 flux_client.switch_database('plug_database')
 
+plug = sys.argv[1]
+mqttclient = sys.argv[2]
+timer = int(sys.argv[3])
+
 Connected = False   # global variable for the state of the connection
   
 broker_address = broker
 port = 1883  #Broker port
 
-client = mqttClient.Client(args.mqttclient)         #create new instance
+client = mqttClient.Client(mqttclient)         #create new instance
 client.username_pw_set('vives', password=mqtt_pw)  #set username and password if required
 client.on_connect= on_connect                      #attach function to callback
 client.on_message= on_message                      #attach function to callback
 
 client.connect(broker_address, port=port)          #connect to broker
 
-#user_input = input("Press enter to calculate the state for nomal usage")
-user_input = input("Please enter what plug you would like to use (1 or 2)")
+if(timer == 0):
+    user_input = input("Press enter to calculate the state for nomal usage")
+#user_input = input("Please enter what plug you would like to use (1 or 2)")
 
-while(user_input != "1" and user_input != "2"):
-    print("please enter a valid plug your last input was: ", user_input)
-    user_input = input("Please enter what plug you would like to use (1 or 2)")
 
 client.loop_start() #start the loop
 
-if (True): # When the user presses enter, it will subscribe to the topic
-    if(user_input == "1"): # all devices that should be off by default
-        client.subscribe("ai-stopcontact/tele/opstelling_plug1/SENSOR")
-        print("subscribed to plug 1")
-        client.publish("ai-stopcontact/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
-    elif(user_input == "2"):
-        client.subscribe("ai-stopcontact/tele/opstelling_plug2/SENSOR")
-        print("subscribed to plug 2")
-        client.publish("ai-stopcontact/tele/opstelling_plug2/SENSOR/usagePrediction", "on")
+# When the user presses enter, it will subscribe to the topic
+if(plug == "1"): # all devices that should be off by default
+    client.subscribe("ai-stopcontact/tele/opstelling_plug1/SENSOR")
+    print("subscribed to plug 1")
+    client.publish("ai-stopcontact/tele/opstelling_plug1/SENSOR/usagePrediction", "on")
+elif(plug == "2"):
+    client.subscribe("ai-stopcontact/tele/opstelling_plug2/SENSOR")
+    print("subscribed to plug 2")
+    client.publish("ai-stopcontact/tele/opstelling_plug2/SENSOR/usagePrediction", "on")
 
 while Connected != True: #Wait for connection
     time.sleep(0.1)
