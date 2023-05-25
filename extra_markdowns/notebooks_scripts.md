@@ -6,6 +6,10 @@
 
 Dit notebook wordt gebruikt om een classificatie model te trainen. Dit model wordt gebruikt in het classificatie script om apparaten te herkennen.
 
+<p align="center">
+  <img src="../img/classification_model.jpg" width="70%">
+</p>
+
 ### Prediction state [[notebook-prediction-state-2devices]](../notebooks/prediction_state2devices.ipynb)
 
 Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). Deze kan getraind worden op twee patronen, één voor een box en één voor een laptop.
@@ -13,6 +17,10 @@ Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit mo
 ### Prediction state - all devices [[notebook-prediction-state]](../notebooks/prediction_stateAlldevices.ipynb)
 
 Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). Deze kan getrained worden op alle devices die kunnen herkend worden door het classificatie model.
+
+<p align="center">
+  <img src="../img/lstm_model.jpg" width="70%">
+</p>
 
 ## Scripts
 
