@@ -50,8 +50,11 @@ Ten laatste moet er nog voor gezorgd worden dat ubuntu **xorg** gebruikt en **NI
 Om ervoor te zorgen dat het touchscreen werkt met twee schermen, wordt bij het opstarten het **touchscreen.sh-script** uitgevoerd. Het wordt uitegevoerd aan de hand van **startup application** in Ubuntu. Het script bevat één simpel commando namelijk:
 
 ```txt
-xinput map-to-output "id" "output"
+id_number=$(xinput --list | grep 'eGalax Inc. USB TouchController' | grep -v 'UNKNOWN\|Touchscreen' | awk -F'id=' '{print $2}' | awk '{print $1}')
+
+xinput map-to-output $id_number HDMI-1
 ```
+
 Het correcte id kan gevonden worden aan de hand van het **xinput**-commando en de output parameter is bijvoorbeeld HDMI-1.
 Om de output van de schermen terug te vinden voer je het volgende commando uit:
 
