@@ -18,6 +18,14 @@ Om ervoor te zorgen dat bij het opstarten van de pc automatisch een access point
 /usr/bin/create_ap -n "interface" "AP naam" "wachtwoord"
 ```
 
+Het kan zijn dat de netwerk adapter plots niet meer werkt op de Ubuntu computer. Als deze nog steeds gedetecteerd wordt door de computer maar niet meer werkt, dan is er een probleem met de drivers. Om dit probleem op te lossen, moet je naar [deze site gaan](https://community.tp-link.com/en/home/forum/topic/547276).
+
+### Remote access
+
+Doordat de opstelling op een lokaal netwerk zit, kan er moeilijk remote access gebeuren met TeamViewer. Daardoor maken we gebruik van AnyDesk, om een remote access te krijgen van de opstelling. Op die manier kunnen we ook de dashboards op zijn plaats zetten.
+
+Hiervoor zal je nog **AnyDesk** moeten installeren via [deze link](https://anydesk.com/nl)
+
 ### Touchscreen
 
 Om het touchscreen te gebruiken moet het ten eerste verbonden zijn met het te bedienen apparaat.
@@ -44,8 +52,12 @@ Om ervoor te zorgen dat het touchscreen werkt met twee schermen, wordt bij het o
 ```txt
 xinput map-to-output "id" "output"
 ```
-
 Het correcte id kan gevonden worden aan de hand van het **xinput**-commando en de output parameter is bijvoorbeeld HDMI-1.
+Om de output van de schermen terug te vinden voer je het volgende commando uit:
+
+```txt
+xrandr
+```
 
 **LET OP: ALS JE DE KABEL VERWISSELD VAN POORT, ZAL DE ID OOK VERANDEREN**
 

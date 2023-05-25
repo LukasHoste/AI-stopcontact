@@ -6,9 +6,21 @@
 
 Dit notebook wordt gebruikt om een classificatie model te trainen. Dit model wordt gebruikt in het classificatie script om apparaten te herkennen.
 
-### Prediction state [[notebook-prediction-state]](../notebooks/prediction_state2devices.ipynb)
+<p align="center">
+  <img src="../img/classification_model.jpg" width="70%">
+</p>
+
+### Prediction state [[notebook-prediction-state-2devices]](../notebooks/prediction_state2devices.ipynb)
 
 Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). Deze kan getraind worden op twee patronen, één voor een box en één voor een laptop.
+
+### Prediction state - all devices [[notebook-prediction-state]](../notebooks/prediction_stateAlldevices.ipynb)
+
+Dit notebook wordt gebruikt om een LSTM model te trainen. Aan de hand van dit model kan een state van een apparaat voorspeld worden (aan of uit). Deze kan getrained worden op alle devices die kunnen herkend worden door het classificatie model.
+
+<p align="center">
+  <img src="../img/lstm_model.jpg" width="70%">
+</p>
 
 ## Scripts
 
@@ -28,9 +40,9 @@ Dit script kan aan de hand van een historiek voor een apparaat een voorspelling 
   <img src="../img/schema_voorspelling.png" width="70%">
 </p>
 
-### Combinatie script !!!!hier nog verwijzen naar het combinatie script en hier ook plaatsten welke modellen er gebruikt zijn en de scaler!!!!!
+### Combinatie script [[combinatie-script]](../scripts/Prediction_script_New/mqtt_classification_prediction.py)
 
-Dit script combineerd de classificatie en voorspelling met elkaar. In dit script wordt het herkende apparaat gebruikt voor de voorspelling van de state.
+Dit script combineerd de classificatie en voorspelling met elkaar. In dit script wordt het herkende apparaat gebruikt voor de voorspelling van de state. Dit is ook het script die gebruikt wordt voor de opstelling.
 
 <p align="center">
   <img src="../img/schema_combinatie.png" width="70%">

@@ -33,3 +33,7 @@
 2. Pas in de mqtt payload node de topic aan. (bv. ai-stopcontact/plugs/lamp_plug/SENSOR)
 3. Pas in de influxDB node aan naar welke measurement de data geschreven wordt (bv. lamp_home)
 4. Indien je een andere mqtt broker gebruikt moet je in de mqtt node het server veld aanpassen.
+
+## Grafana
+
+Grafana wordt gebruikt om grafieken van data uit influxdb te maken, zo wordt het in de opstelling gebruikt om de historieken van de verschillende apparaten te tonen. Grafana kan geïnstalleerd worden via add-ons in home assistant. Om InfluxDB te gebruiken moet het onder configuration toegevoegd worden als een data source, voor influxdb moet je het adres (localhost niet aangeraden), de database naam, user en password instellen. Om ons dashboard te gebruiken kan je onder dashboards -> new dashboard op import klikken en grafana.json uploaden. Het is mogelijk dat de querys van de verschillende panels nog moeten aangepast worden.
