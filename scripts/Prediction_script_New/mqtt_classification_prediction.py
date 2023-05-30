@@ -29,23 +29,6 @@ broker = os.environ.get('MQTT_BROKER')
 influxip = os.environ.get('INFLUX_ADDRESS')
 mqtt_pw = os.environ.get('MQTT_PASS')
 
-#def parseArguments():
-#    # Create argument parser
-#    parser = argparse.ArgumentParser()
-#    # Optional arguments
-#    parser.add_argument("-p", "--plug", help="choose a plug", default='1')
-#    parser.add_argument("-mc", "--mqttclient", help="choose an mqtt client name", default='client')
-#    # add the --help option to the parser
-#    #parser.add_argument('--help', action='help', help='Show this help message and exit')
-#    # Print version
-#    parser.add_argument("--version", action="version", version='%(prog)s - Version 0.8')
-#    # Parse arguments
-#    args = parser.parse_args()
-#    return args
-
-#args = parseArguments()
-# print(args.history)
-
 # Global variables
 normal_usage = np.zeros(shape=(1,0)) # Numpy array for all the normal usage values
 states = 0 # Variable for the normal state
@@ -59,8 +42,6 @@ days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturda
 months_of_year = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 # Load in the model
-# model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional')
-# model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/2devices_bidirectional') #this is the old model that makes a prediction for box or laptop
 model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/all_devicesV4')
 classification_model = keras.models.load_model('/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/model/classification_15-05_simple') # loads the model
 
@@ -72,7 +53,7 @@ classification_scaler = joblib.load('/home/vives/Documents/slim/SlimmeStopcontac
 device = 0
 # last_change = 0
 
-# CLASSES=['box', 'laptop', 'monitor', 'pc', 'phone', 'printer','switch','tv'] # list of all the classes, this has to be in the same order as during training
+# list of all the classes, this has to be in the same order as during training
 CLASSES=['box', 'laptop', 'pc', 'phone', 'printer']
 
 
@@ -94,10 +75,9 @@ def influx_history(client, dataframe, device):
             }
         }
         formatted_data.append(formatted_row)
-
-    # print(formatted_data)
     client.write_points(formatted_data)
 
+# function that restarts the script and passes the current arguments to the next iteration of the script
 def restart():
     python = sys.executable
     script = os.path.abspath(__file__)
@@ -121,11 +101,9 @@ def on_connect(client, userdata, flags, rc):
     else:
       print("Connection failed")
 
-# The on message method
 def on_message(client, userdata, message):
     # Create class object
     mqtt_prediction = MqttPrediction()
-        
 
     # Decode message
     bytes_array = message.payload.decode('utf8') # Get the message from the payload
@@ -144,10 +122,7 @@ def on_message(client, userdata, message):
     global time_counter
     global first_value
     
-
     # ------------- classification -------------
-
-
 
     # if the topic is not yet in the dictionary, add the topic name as a key to the dictionary and fill it with an empty array
     if(not str(message.topic) in prediction_arrays):
@@ -164,9 +139,6 @@ def on_message(client, userdata, message):
         client.publish(message.topic + "/prediction","unknown")
         client.publish(message.topic + "/prediction_state", "waiting on classification")
         client.publish(message.topic + "/latest", "currently not predicting")
-
-
-    
     elif((prediction_arrays[str(message.topic)].size/4) <= 9):
         client.publish(message.topic + "/classification_state", "retrieving/waiting for values: retrieved values = " + str((prediction_arrays[str(message.topic)].size/4)+1) + "/10")
         client.publish(message.topic + "/prediction_state", "waiting on classification")
@@ -175,7 +147,6 @@ def on_message(client, userdata, message):
             print(prediction_arrays[str(message.topic)].size)
             prediction_arrays[str(message.topic)] = np.append(prediction_arrays[str(message.topic)],[json_object["ENERGY"]["ApparentPower"],
             json_object["ENERGY"]["Current"],
-            # json_object["ENERGY"]["Factor"],
             json_object["ENERGY"]["Power"],
             json_object["ENERGY"]["ReactivePower"]
             ])
@@ -195,20 +166,11 @@ def on_message(client, userdata, message):
         print(device)
         # get the class name
         print("predicted device: ",CLASSES[device])
-        # for the demo there are only two devices thus we dont use the index to determine the device
-        
-        # if(CLASSES[class_index] == "box" and args.device == "box"):
-        #     device = 1
-        # elif(CLASSES[class_index] == "laptop" and args.device == "laptop"):
-        #     device = 0
-        # else:
-        #     print("incorrect device predicted stopping execution")
-
+        # send the result of the prediction back to the topic
         client.publish(message.topic + "/prediction",CLASSES[device])
         client.publish(message.topic + "/classification_state", "done")
         client.publish(message.topic + "/prediction_state", "retrieving history")
-
-        
+        # load in the correct history based on the recognized device
         if(CLASSES[device] == "laptop"):
             df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/pc_jarno_1w.csv', parse_dates=['timestamp'])
         elif(CLASSES[device] == "box"):
@@ -221,20 +183,15 @@ def on_message(client, userdata, message):
         elif(CLASSES[device] == "phone"):
             df_history = pd.read_csv(r'/home/vives/Documents/slim/SlimmeStopcontactenVIVES/scripts/Prediction_script_New/data/PhoneSynth.csv', parse_dates=['timestamp'])
 
+        # retrieve the first state, determines if the plug should be on or off at the start of the prediction
         first_value = df_history['state'].iloc[0]
         print(first_value)
-        
-	   # client.disconnect()
-	    #exit()
-        print(device)
-        # send the result of the prediction back to the topic
 
-        # if(once == True):
+        print(device)
+        # makes it so the classification block is only executed once
         prediction_state[str(message.topic)] = True
 
     # ------------ prediction ---------------
-
-    
 
     # Second part is to make the prediction 
     elif (normal_usage.size == 10):
@@ -259,9 +216,6 @@ def on_message(client, userdata, message):
             global history_dataset
             history_dataset = mqtt_prediction.history_creation(df_history) # Creating our own history (one week)
             influx_history(flux_client, history_dataset,CLASSES[device])
-            # global history_array
-            # history_array = np.array(history_dataset) # Change the history dataset to a numpy array
-            # print(history_array)
             print(history_dataset)
 
         # When the history is created then the first prediction can be made
@@ -272,16 +226,13 @@ def on_message(client, userdata, message):
             latest_time = latest_time + timedelta(0,240) # Add 4 minutes to the latest time
             print("THIS IS THE TIME WITH + 4min: ", latest_time)
             global scaled_history
-            # print(history_dataset)
             scaled_history = history_dataset.copy() # Take a copy from the original history
             scaled_history = mqtt_prediction.scaled_history(scaled_history, scaler,device) # Scale the history
-            # print(scaled_history)
             global scaled_history_array
             scaled_history_array = np.array(scaled_history) # Change the history dataset to a numpy array
             new_row = {'timestamp': latest_time, 'state': extracted_value}
             new_row_df = pd.DataFrame([new_row])
             history_dataset = pd.concat([history_dataset,new_row_df],ignore_index=True)
-            #history_dataset = history_dataset.append(new_row, ignore_index=True) # Add the latest time and state (+4min) to the original history
             history_dataset = history_dataset.drop(0) # Drop the first row from the original dataset
             print("THIS IS THE NEW HISTORY DATASET: ", history_dataset)
             month = latest_time.month
