@@ -168,7 +168,7 @@ def on_message(client, userdata, message):
 
     
     elif((prediction_arrays[str(message.topic)].size/4) <= 9):
-        client.publish(message.topic + "/classification_state", "retrieving/waiting for values")
+        client.publish(message.topic + "/classification_state", "retrieving/waiting for values: retrieved values = " + str((prediction_arrays[str(message.topic)].size/4)+1) + "/10")
         client.publish(message.topic + "/prediction_state", "waiting on classification")
         if(json_object["ENERGY"]["Power"] != 0):
             print("executing block one of classification")
