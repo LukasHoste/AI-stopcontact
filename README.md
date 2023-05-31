@@ -45,6 +45,8 @@ Ten slotte werd een opstelling gemaakt die de volledige werking van de bachelorp
 
 - [complete opstelling & setup](./extra_markdowns/opstelling.md)
 
+- [manual](./extra_markdowns/manual_opstelling.md)
+
 - [installatie en uitvoering van model/scripts](./extra_markdowns/installatie_uitvoering.md)
 
 ## Auteurs
